@@ -1,0 +1,151 @@
+@import 'colors';
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
+body {
+    font-size: 16px;
+}
+
+/*
+    Layout
+*/
+
+body {
+    min-height: 100vh;
+}
+
+.loader {
+    min-height: 100vh;
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.site-header {
+    background-color: $color_2;
+    &__top {
+        display: flex;
+        align-items: center;
+        height: 80px;
+    }
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-family: "Indie Flower";
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color_attn;
+    text-align: center;
+    color: #fff;
+    line-height: .8;
+    margin-right: 100px;
+}
+
+.menu {
+    display: flex;
+    a {
+        display: block;
+        margin-right: 30px;
+        font-size: 16px;
+        color: $color_dark;
+        &.active {
+            color: $color_attn;
+        }
+    }
+}
+
+.user-panel {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    color: $color_dark;
+}
+
+.user {
+    font-size: 14px;
+    margin-right: 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+    line-height: 1;
+    img {
+        margin-right: 5px;
+        display: block;
+        margin: auto;
+        border-radius: 50%;
+    }
+    span {
+        display: block;
+        max-width: 100px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    button {
+        margin-top: 3px;
+        display: block;
+        border: none;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+        line-height: 1;
+        font-size: 11px;
+        color: $color_attn;
+        border-bottom: 1px dashed $color_attn;
+    }
+}
+
+.calculator-link {
+    font-size: 14px;
+    margin-right: 20px;
+    text-align: center;
+    max-width: 120px;
+    line-height: 1;
+    color: inherit;
+    span, svg {
+        margin: auto;
+        display: block;
+    }
+    svg {
+        margin-bottom: 5px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+main {
+    flex: 1;
+    background-color: #fff;
+}
+
+.site-footer {
+    background-color: $color_2;
+    padding: 50px 0;
+    text-align: center;
+    font-size: 14px;
+}

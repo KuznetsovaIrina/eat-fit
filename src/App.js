@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import Layout from './components/Layout';
+import AppRouter from './AppRouter';
+import { BrowserRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { initializeApp } from './redux/app-reducer';
+import { login, logout } from './redux/auth-reducer';
+import Loader from './components/Loader';
+import 'antd/dist/antd.css';
+import './assets/styles/common.scss';
 
-function App() {
+const App = ({ initializeApp, initialized, login, logout, user }) => {
+  useEffect(() => {
+    initializeApp();
+  }, [])
+
+  if (!initialized) {
+    return <Loader />
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BrowserRouter>
+      <Layout
+        user={user}
+        login={login}
+        logout={logout}
+      >
+        <AppRouter user={user} />
+      </Layout>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  initialized: state.app.initialized,
+  user: state.auth.user,
+})
+
+export default connect(mapStateToProps, { initializeApp, login, logout })(App);
