@@ -42,7 +42,9 @@ const Layout = ({children, user, login, logout}) => {
             </header>
             <main>
                 <div className='container'>
-                    {children}
+                    <div className='page'>
+                        {children}
+                    </div>
                 </div>
             </main>
             <footer className='site-footer'>

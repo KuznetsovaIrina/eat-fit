@@ -1,6 +1,7 @@
 import firebase from 'firebase/compat/app';
 import { auth } from './../firebase';
 import { userAPI } from '../api';
+import { setData } from './calculator-reducer';
 
 const SET_AUTH_USER = 'auth/SET_AUTH_USER';
 
@@ -22,16 +23,21 @@ const authReducer = (state = initialState, action) => {
 
 export const setAuthUser = (user) => ({ type: SET_AUTH_USER, payload: user });
 
-export const getAuthUser = () => async (dispatch) => {
+export const getAuthData = () => async (dispatch) => {
     return await new Promise( (resolve, reject) => {
         firebase.auth().onIdTokenChanged(async (user) => {
           if (!user) {
-            resolve(undefined);
-            dispatch(setAuthUser(null));
+              dispatch(setAuthUser(null));
+              dispatch(setData({}));
+              resolve(undefined);
           } else {
-            resolve(user.uid);
-            const { uid, displayName, email, photoURL } = user
+            const userData = await userAPI.get(user.uid);
+            const { uid, displayName, email, photoURL } = user;
             dispatch(setAuthUser({ uid, displayName, email, photoURL }));
+            if (userData && userData.info && userData.norm) {
+                dispatch(setData({ info: userData.info, norm: userData.norm }));
+            }
+            resolve(userData);
           }
         }
     )}).then((uid)=>uid).catch(function(e) {

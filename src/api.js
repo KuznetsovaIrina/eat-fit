@@ -9,5 +9,15 @@ export const userAPI = {
             const ref = firebase.database().ref(`users/${user.uid}`);
             ref.set(user);
         }
+    },
+
+    async get(uid) {
+        const res = await axios.get(`${url}/users/${uid}.json`);
+        return res.data;
+    },
+
+    async updateInfo(uid, data) {
+        const ref = firebase.database().ref(`users/${uid}`);
+        ref.update({...data});
     }
 }
