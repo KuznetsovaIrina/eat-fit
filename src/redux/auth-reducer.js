@@ -31,13 +31,13 @@ export const getAuthData = () => async (dispatch) => {
                 dispatch(setAuthUser(null));
                 dispatch(setIngredientsAC([]));
                 dispatch(setData({}));
-                reject(null);
+                resolve(undefined);
             }
             else {
-                const { uid, displayName, email, photoURL } = user;
-                dispatch(setAuthUser({ uid, displayName, email, photoURL }));
-    
                 const userData = await userAPI.get(user.uid);
+                const { uid, displayName, email, photoURL } = user;
+                dispatch(setAuthUser({ uid, displayName, email, photoURL, isAdmin: userData.isAdmin || false }));
+    
     
                 userData && userData.ingredients
                     && dispatch(setIngredientsAC(Object.keys(userData.ingredients).map(id => ({ ...userData.ingredients[id], id }))));

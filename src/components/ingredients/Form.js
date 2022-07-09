@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ingredients.module.scss';
+import { PlusOutlined } from '@ant-design/icons';
 import { InputNumber, Input, Button } from 'antd';
+import { Select, Typography, Space } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
+const { Option } = Select;
 
-const Form = ({ add, edit, data, close }) => {
+const Form = ({ isAdmin, add, categories, addCategory, edit, data, close }) => {
     const { handleSubmit, reset, watch, control } = useForm({ defaultValues: data });
     const [image, setImage] = useState(data ? data.imageURL : null);
+    const [categoryTitle, setCategoryTitle] = useState('');
 
     const watchImage = watch('imageURL');
 
@@ -13,18 +17,28 @@ const Form = ({ add, edit, data, close }) => {
         setImage(watchImage);
     }, [watchImage])
 
-    const onSubmit = data => {
-        add ? add(data) : edit(data);
+    const onSubmit = form => {
+        add
+            ? add(form, form.category)
+            : edit(form, form.category, data.category);
+
         reset();
         close();
     }
 
+    const onAddCategory = () => {
+        if (categoryTitle.trim().length) {
+            addCategory({ title: categoryTitle.trim() })
+        }
+        setCategoryTitle('');
+    }
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)}  className={styles.form}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
             <div className={styles.boxImage}>
                 <div
                     className={styles.preview}
-                    style={{backgroundImage: `url(${image})`}}
+                    style={{ backgroundImage: `url(${image})` }}
                 />
                 <Controller
                     control={control}
@@ -36,6 +50,45 @@ const Form = ({ add, edit, data, close }) => {
                         <Input placeholder='Ссылка на изображение' value={value} onChange={onChange} />
                     )}
                 />
+
+                {isAdmin &&
+                    <div className={styles.categories}>
+                        <label className={styles.label}>Категория</label>
+                        <Controller
+                            control={control}
+                            shouldUnregister={true}
+                            name='category'
+                            render={({
+                                field: { value, onChange }
+                            }) => (
+                                <>
+                                    <Select
+                                        value={value}
+                                        onChange={onChange}
+                                        style={{width: '100%'}}
+                                        dropdownRender={(menu) => (
+                                            <>
+                                                {menu}
+                                                <Space style={{padding: '10px'}}>
+                                                    <Input value={categoryTitle} onChange={(e) => setCategoryTitle(e.target.value)} />
+                                                    <Typography.Link onClick={onAddCategory}>
+                                                        <PlusOutlined /> Добавить
+                                                    </Typography.Link>
+                                                </Space>
+                                            </>
+                                        )}
+                                    >
+                                        {categories.map((category) => (
+                                            <Option key={category.id} value={category.id}>
+                                                {category.title}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </>
+                            )}
+                        />
+                    </div>
+                }
             </div>
             <div className={styles.fields}>
                 <div>
@@ -64,7 +117,7 @@ const Form = ({ add, edit, data, close }) => {
                         <Controller
                             control={control}
                             shouldUnregister={true}
-                            name='calories'
+                            name='kcal'
                             rules={{
                                 required: 'Это поле обязательно'
                             }}

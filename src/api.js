@@ -23,16 +23,45 @@ export const userAPI = {
 }
 
 export const ingredientsAPI = {
-    async create(ingredient, uid) {
-        const res = await axios.post(`${url}/users/${uid}/ingredients/.json`, ingredient);
+    async create(ingredient, uid, categoryid) {
+        const res = categoryid
+            ? await axios.post(`${url}/categories/${categoryid}/ingredients.json`, ingredient)
+            : await axios.post(`${url}/users/${uid}/ingredients/.json`, ingredient);
+
         return res.data.name;
     },
 
-    async update(ingredient, uid) {
-        await axios.put(`${url}/users/${uid}/ingredients/${ingredient.id}/.json`, ingredient);
+    async update(ingredient, uid, categoryId) {
+        const ingredientUrl = categoryId
+            ? `${url}/categories/${categoryId}/ingredients/${ingredient.id}/.json`
+            : `${url}/users/${uid}/ingredients/${ingredient.id}/.json`;
+
+        await axios.put(ingredientUrl, ingredient);
     },
 
-    async remove(id, uid) {
-        await axios.delete(`${url}/users/${uid}/ingredients/${id}/.json`);
+    async remove(id, uid, categoryId) {
+        categoryId
+            ? await axios.delete(`${url}/categories/${categoryId}/ingredients/${id}/.json`)
+            : await axios.delete(`${url}/users/${uid}/ingredients/${id}/.json`);
     },
+
+    async getByCategory(categoryId) {
+        const res = await axios.get(`${url}/categories/${categoryId}/ingredients.json`);
+        return res.data;
+    },
+    
+    async getByUser(uid) {
+        const res = await axios.get(`${url}/users/${uid}/ingredients.json`);
+        return res.data;
+    },
+
+    async getCategories() {
+        const res = await axios.get(`${url}/categories.json`);
+        return res.data;
+    },
+
+    async createCategory(category) {
+        const res = await axios.post(`${url}/categories.json`, category);
+        return res.data.name;
+    }
 }

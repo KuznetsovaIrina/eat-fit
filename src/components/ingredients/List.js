@@ -4,7 +4,7 @@ import Item from './Item';
 import Form from './Form';
 import DrawerForm from '../DrawerForm';
 
-const List = ({ingredients, remove, edit}) => {
+const List = ({isAdmin, addCategory, categories, ingredients, remove, edit, currentCategory}) => {
     const [visible, setVisible] = useState(false);
     const [editableObj, setEditableObj] = useState({});
 
@@ -27,6 +27,9 @@ const List = ({ingredients, remove, edit}) => {
                     edit={edit}
                     data={editableObj}
                     close={closeEdit}
+                    isAdmin={isAdmin}
+                    addCategory={addCategory}
+                    categories={categories}
                 />
             }
 
@@ -42,12 +45,15 @@ const List = ({ingredients, remove, edit}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {ingredients.map(i =>
+                    {ingredients.map((i, index) =>
                         <Item
+                            index={index}
                             openEdit={openEdit}
                             key={i.id}
                             ingredient={i}
                             remove={remove}
+                            isAdmin={isAdmin}
+                            currentCategory={currentCategory}
                         />
                     )}
                 </tbody>

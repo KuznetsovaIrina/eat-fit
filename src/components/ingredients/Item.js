@@ -3,11 +3,12 @@ import styles from './ingredients.module.scss';
 import { Button } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const Item = ({ingredient, remove, openEdit}) => {
+const Item = ({ingredient, remove, openEdit, index, isAdmin, currentCategory}) => {
     return (
         <tr>
             <td>
                 <div className={styles.header}>
+                    <span className={styles.index}>{++index}.</span>
                     <div
                         className={styles.image}
                         style={{backgroundImage: `url(${ingredient.imageURL})`}}
@@ -18,7 +19,7 @@ const Item = ({ingredient, remove, openEdit}) => {
                 </div>
             </td>
             <td>
-                {ingredient.calories}
+                {ingredient.kcal}
             </td>
             <td>
                 {ingredient.squirrels}
@@ -30,10 +31,12 @@ const Item = ({ingredient, remove, openEdit}) => {
                 {ingredient.carbohydrates}
             </td>
             <td>
-                <div className={styles.tools}>
-                    <Button onClick={() => openEdit(ingredient)} shape="circle" icon={<EditOutlined  />} size='small' />
-                    <Button onClick={() => remove(ingredient.id)} shape="circle" icon={<DeleteOutlined  />} size='small' />
-                </div>
+                {(currentCategory === 'user' || isAdmin) &&
+                    <div className={styles.tools}>
+                        <Button onClick={() => openEdit(ingredient)} shape="circle" icon={<EditOutlined  />} size='small' />
+                        <Button onClick={() => remove(ingredient.id, currentCategory)} shape="circle" icon={<DeleteOutlined  />} size='small' />
+                    </div>
+                }
             </td>
         </tr>
     )
