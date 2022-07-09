@@ -23,7 +23,6 @@ export const initializedSuccess = () => ({type: INITIALIZED_SUCCESS});
 export const initializeApp = () => async (dispatch) => {
     await dispatch(getAuthData());
     dispatch(initializedSuccess());
-    
 }
 
 export default appReducer;

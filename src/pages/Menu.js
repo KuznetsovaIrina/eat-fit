@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const Menu = ({ userData }) => {
-    console.log(userData);
+    // console.log(userData);
 
     return (
         <div>Menu</div>

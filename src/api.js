@@ -16,8 +16,23 @@ export const userAPI = {
         return res.data;
     },
 
-    async updateInfo(uid, data) {
-        const ref = firebase.database().ref(`users/${uid}`);
-        ref.update({...data});
+    async updateInfo(uid, data, norm) {
+        await axios.put(`${url}/users/${uid}/info.json`, {...data});
+        await axios.put(`${url}/users/${uid}/norm.json`, {...norm});
     }
+}
+
+export const ingredientsAPI = {
+    async create(ingredient, uid) {
+        const res = await axios.post(`${url}/users/${uid}/ingredients/.json`, ingredient);
+        return res.data.name;
+    },
+
+    async update(ingredient, uid) {
+        await axios.put(`${url}/users/${uid}/ingredients/${ingredient.id}/.json`, ingredient);
+    },
+
+    async remove(id, uid) {
+        await axios.delete(`${url}/users/${uid}/ingredients/${id}/.json`);
+    },
 }

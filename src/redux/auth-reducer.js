@@ -1,7 +1,8 @@
 import firebase from 'firebase/compat/app';
 import { auth } from './../firebase';
-import { userAPI } from '../api';
+import { setIngredientsAC } from './ingredients-reducer';
 import { setData } from './calculator-reducer';
+import { userAPI } from '../api';
 
 const SET_AUTH_USER = 'auth/SET_AUTH_USER';
 
@@ -25,24 +26,29 @@ export const setAuthUser = (user) => ({ type: SET_AUTH_USER, payload: user });
 
 export const getAuthData = () => async (dispatch) => {
     return await new Promise( (resolve, reject) => {
-        firebase.auth().onIdTokenChanged(async (user) => {
-          if (!user) {
-              dispatch(setAuthUser(null));
-              dispatch(setData({}));
-              resolve(undefined);
-          } else {
-            const userData = await userAPI.get(user.uid);
-            const { uid, displayName, email, photoURL } = user;
-            dispatch(setAuthUser({ uid, displayName, email, photoURL }));
-            if (userData && userData.info && userData.norm) {
-                dispatch(setData({ info: userData.info, norm: userData.norm }));
+        firebase.auth().onIdTokenChanged(async user => {
+            if (!user) {
+                dispatch(setAuthUser(null));
+                dispatch(setIngredientsAC([]));
+                dispatch(setData({}));
+                reject(null);
             }
-            resolve(userData);
-          }
-        }
-    )}).then((uid)=>uid).catch(function(e) {
-        throw (e);
-    });
+            else {
+                const { uid, displayName, email, photoURL } = user;
+                dispatch(setAuthUser({ uid, displayName, email, photoURL }));
+    
+                const userData = await userAPI.get(user.uid);
+    
+                userData && userData.ingredients
+                    && dispatch(setIngredientsAC(Object.keys(userData.ingredients).map(id => ({ ...userData.ingredients[id], id }))));
+    
+                userData && userData.info && userData.norm
+                    && dispatch(setData({ info: userData.info, norm: userData.norm }))
+                
+                resolve(user.uid);
+            }
+        })
+    })
 }
 
 export const login = () => async (dispatch) => {
@@ -64,6 +70,7 @@ export const login = () => async (dispatch) => {
 export const logout = () => async (dispatch) => {
     await auth.signOut();
     dispatch(setAuthUser(null));
+
 }
 
 export default authReducer;
