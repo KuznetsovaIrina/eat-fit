@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ingredients.module.scss';
 import { PlusOutlined } from '@ant-design/icons';
-import { InputNumber, Input, Button } from 'antd';
-import { Select, Typography, Space } from 'antd';
-import { useForm, Controller } from 'react-hook-form';
-const { Option } = Select;
+import { Input, Button } from 'antd';
+import { Typography, Space } from 'antd';
+import { useForm } from 'react-hook-form';
+import { ControllerInput, ControllerInputNumber, ControllerSelect } from '../../util/controllers';
 
 const Form = ({ isAdmin, add, categories, addCategory, edit, data, close }) => {
     const { handleSubmit, reset, watch, control } = useForm({ defaultValues: data });
@@ -17,13 +17,13 @@ const Form = ({ isAdmin, add, categories, addCategory, edit, data, close }) => {
         setImage(watchImage);
     }, [watchImage])
 
-    const onSubmit = form => {
+    const onSubmit = formData => {
         add
-            ? add(form, form.category)
-            : edit(form, form.category, data.category);
+            ? add(formData, formData.category)
+            : edit(formData, formData.category, data.category);
 
         reset();
-        close();
+        close(formData.category, true);
     }
 
     const onAddCategory = () => {
@@ -40,50 +40,28 @@ const Form = ({ isAdmin, add, categories, addCategory, edit, data, close }) => {
                     className={styles.preview}
                     style={{ backgroundImage: `url(${image})` }}
                 />
-                <Controller
+                <ControllerInput
                     control={control}
-                    shouldUnregister={true}
                     name='imageURL'
-                    render={({
-                        field: { value, onChange },
-                    }) => (
-                        <Input placeholder='Ссылка на изображение' value={value} onChange={onChange} />
-                    )}
+                    placeholder='Ссылка на изображение'
                 />
 
                 {isAdmin &&
                     <div className={styles.categories}>
                         <label className={styles.label}>Категория</label>
-                        <Controller
+                        <ControllerSelect
                             control={control}
-                            shouldUnregister={true}
                             name='category'
-                            render={({
-                                field: { value, onChange }
-                            }) => (
+                            options={categories}
+                            dropdown={(menu) => (
                                 <>
-                                    <Select
-                                        value={value}
-                                        onChange={onChange}
-                                        style={{width: '100%'}}
-                                        dropdownRender={(menu) => (
-                                            <>
-                                                {menu}
-                                                <Space style={{padding: '10px'}}>
-                                                    <Input value={categoryTitle} onChange={(e) => setCategoryTitle(e.target.value)} />
-                                                    <Typography.Link onClick={onAddCategory}>
-                                                        <PlusOutlined /> Добавить
-                                                    </Typography.Link>
-                                                </Space>
-                                            </>
-                                        )}
-                                    >
-                                        {categories.map((category) => (
-                                            <Option key={category.id} value={category.id}>
-                                                {category.title}
-                                            </Option>
-                                        ))}
-                                    </Select>
+                                    {menu}
+                                    <Space style={{ padding: '10px' }}>
+                                        <Input value={categoryTitle} onChange={(e) => setCategoryTitle(e.target.value)} />
+                                        <Typography.Link onClick={onAddCategory}>
+                                            <PlusOutlined /> Добавить
+                                        </Typography.Link>
+                                    </Space>
                                 </>
                             )}
                         />
@@ -93,103 +71,43 @@ const Form = ({ isAdmin, add, categories, addCategory, edit, data, close }) => {
             <div className={styles.fields}>
                 <div>
                     <label className={styles.label}>Название</label>
-                    <Controller
+                    <ControllerInput
                         control={control}
-                        shouldUnregister={true}
                         name='title'
-                        rules={{
-                            required: 'Это поле обязательно'
-                        }}
-                        render={({
-                            field: { name, value, onChange },
-                            formState: { errors }
-                        }) => (
-                            <>
-                                <Input value={value} onChange={onChange} />
-                                {errors[name] && <span className={styles.error}>{errors[name].message}</span>}
-                            </>
-                        )}
+                        rules={{ required: 'Это поле обязательно' }}
                     />
                 </div>
                 <div className={styles.wrap}>
                     <div>
                         <label className={styles.label}>Калорий (на 100 гр.)</label>
-                        <Controller
+                        <ControllerInputNumber
                             control={control}
-                            shouldUnregister={true}
                             name='kcal'
-                            rules={{
-                                required: 'Это поле обязательно'
-                            }}
-                            render={({
-                                field: { name, value, onChange },
-                                formState: { errors }
-                            }) => (
-                                <>
-                                    <InputNumber value={value} onChange={onChange} min={0} style={{ width: '100%' }} />
-                                    {errors[name] && <span className={styles.error}>{errors[name].message}</span>}
-                                </>
-                            )}
+                            rules={{ required: 'Это поле обязательно' }}
                         />
                     </div>
                     <div>
                         <label className={styles.label}>Белков (на 100 гр.)</label>
-                        <Controller
+                        <ControllerInputNumber
                             control={control}
-                            shouldUnregister={true}
                             name='squirrels'
-                            rules={{
-                                required: 'Это поле обязательно'
-                            }}
-                            render={({
-                                field: { name, value, onChange },
-                                formState: { errors }
-                            }) => (
-                                <>
-                                    <InputNumber value={value} onChange={onChange} min={0} style={{ width: '100%' }} />
-                                    {errors[name] && <span className={styles.error}>{errors[name].message}</span>}
-                                </>
-                            )}
+                            rules={{ required: 'Это поле обязательно' }}
                         />
                     </div>
                     <div>
                         <label className={styles.label}>Жиров (на 100 гр.)</label>
-                        <Controller
+                        <ControllerInputNumber
                             control={control}
-                            shouldUnregister={true}
                             name='fats'
-                            rules={{
-                                required: 'Это поле обязательно'
-                            }}
-                            render={({
-                                field: { name, value, onChange },
-                                formState: { errors }
-                            }) => (
-                                <>
-                                    <InputNumber value={value} onChange={onChange} min={0} style={{ width: '100%' }} />
-                                    {errors[name] && <span className={styles.error}>{errors[name].message}</span>}
-                                </>
-                            )}
+                            rules={{ required: 'Это поле обязательно' }}
                         />
                     </div>
                     <div>
                         <label className={styles.label}>Углеводов (на 100 гр.)</label>
-                        <Controller
+                        <ControllerInputNumber
                             control={control}
-                            shouldUnregister={true}
                             name='carbohydrates'
-                            rules={{
-                                required: 'Это поле обязательно'
-                            }}
-                            render={({
-                                field: { name, value, onChange },
-                                formState: { errors }
-                            }) => (
-                                <>
-                                    <InputNumber value={value} onChange={onChange} min={0} style={{ width: '100%' }} />
-                                    {errors[name] && <span className={styles.error}>{errors[name].message}</span>}
-                                </>
-                            )}
+                            rules={{ required: 'Это поле обязательно' }}
                         />
                     </div>
                 </div>

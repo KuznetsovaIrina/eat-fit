@@ -67,24 +67,28 @@ export const updateIngredient = (ingredient, categoryId, oldCategoryId) => async
     await ingredientsAPI.update(
         ingredient,
         getState().auth.user.uid,
-        categoryId,
-        oldCategoryId
+        categoryId
     );
 
     if (oldCategoryId !== categoryId) {
-        dispatch(removeIngredient(ingredient.id, oldCategoryId));
+        dispatch(removeIngredient(ingredient.id, oldCategoryId, false));
     }
     
     dispatch(updateIngredientAC({...ingredient}));
     message.success('Ингредиент изменен!');
 }
 
-export const removeIngredient = (id, categoryId) => async (dispatch, getState) => {
-    await ingredientsAPI.remove(id, getState().auth.user.uid, categoryId);
+export const removeIngredient = (id, categoryId, isRemoval = true) => async (dispatch, getState) => {
+    categoryId !== 'user'
+        ? await ingredientsAPI.remove(id, getState().auth.user.uid, categoryId)
+        : await ingredientsAPI.remove(id, getState().auth.user.uid, null);
+
     dispatch(removeIngredientAC(id));
     
-    if (!categoryId) {
+    if (isRemoval) {
         message.success('Ингредиент удален!');
+    } else {
+        message.success('Ингредиент перенесен в другую категрию!');
     }
 }
 

@@ -27,12 +27,22 @@ const Ingredients = ({
     const [visible, setVisible] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('user');
 
+    const onClose = (categoryId, isSubmit) => {
+        if (categoryId && isSubmit) {
+            setCurrentCategory(categoryId);
+            setIngredients(categoryId);
+        }
+        
+        setVisible(false)
+    }
+
     return (
         <>  
             <Categories
                 categories={categories}
                 setIngredients={setIngredients}
                 setCurrentCategory={setCurrentCategory}
+                currentCategory={currentCategory}
             />
             
             <Space>
@@ -54,7 +64,7 @@ const Ingredients = ({
                 visible={visible}
                 Form={Form}
                 add={addIngredient}
-                close={() => setVisible(false)}
+                close={onClose}
                 title='Добавить'
                 isAdmin={isAdmin}
                 addCategory={addCategory}
