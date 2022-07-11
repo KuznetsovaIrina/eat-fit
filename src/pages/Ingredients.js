@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
     addIngredient,
     removeIngredient,
     updateIngredient,
     addCategory,
-    setIngredients
+    setIngredients,
+    setIngredientsAC
 } from './../redux/ingredients-reducer';
 import Form from './../components/ingredients/Form';
 import List from './../components/ingredients/List';
@@ -22,10 +23,14 @@ const Ingredients = ({
     removeIngredient,
     updateIngredient,
     addCategory,
-    setIngredients
+    setIngredients,
 }) => {
     const [visible, setVisible] = useState(false);
     const [currentCategory, setCurrentCategory] = useState('user');
+
+    useEffect(() => {
+        setIngredients(currentCategory)
+    }, []);
 
     const onClose = (categoryId, isSubmit) => {
         if (categoryId && isSubmit) {
@@ -95,5 +100,6 @@ export default connect(mapStateToProps, {
     removeIngredient,
     updateIngredient,
     addCategory,
-    setIngredients
+    setIngredients,
+    setIngredientsAC
 })(Ingredients);

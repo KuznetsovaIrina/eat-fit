@@ -2,6 +2,7 @@ import { InputNumber, Input } from 'antd';
 import { Select } from 'antd';
 import { Controller } from 'react-hook-form';
 const { Option } = Select;
+const { TextArea } = Input;
 
 const styles = {
     error: {
@@ -75,6 +76,26 @@ export const ControllerSelect = ({ control, name, rules = {}, placeholder = '', 
                             </Option>
                         ))}
                     </Select>
+                    {errors[name] && <span style={styles.error}>{errors[name].message}</span>}
+                </>
+            )}
+        />
+    )
+}
+
+export const ControllerTextArea = ({ control, name, rules = {}, placeholder = '' }) => {
+    return (
+        <Controller
+            control={control}
+            shouldUnregister={true}
+            name={name}
+            rules={rules}
+            render={({
+                field: { name, value, onChange },
+                formState: { errors }
+            }) => (
+                <>
+                    <TextArea autoSize placeholder={placeholder} value={value} onChange={onChange} />
                     {errors[name] && <span style={styles.error}>{errors[name].message}</span>}
                 </>
             )}

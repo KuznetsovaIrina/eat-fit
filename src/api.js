@@ -65,3 +65,10 @@ export const ingredientsAPI = {
         return res.data.name;
     }
 }
+
+export const dishesAPI = {
+    async create(dish, uid) {
+        const res = await axios.post(`${url}/users/${uid}/dishes/.json`, dish);
+        return res.data.name;
+    },
+}
