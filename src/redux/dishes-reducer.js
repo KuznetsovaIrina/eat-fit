@@ -43,16 +43,21 @@ export const updateDishAC = (dish) => ({type: UPDATE_DISH, payload: dish});
 export const removeDishAC = (id) => ({type: REMOVE_DISH, payload: id});
 
 export const addDish = (dish) => async (dispatch, getState) => {
-    const id = dishesAPI.create(dish, getState().auth.user.uid);
+    const id = await dishesAPI.create(dish, getState().auth.user.uid);
     dispatch(addDishAC({...dish, id}));
+    message.success('Блюдо добавлено!');
 }
 
-export const updateDish = (dish) => async (dispatch) => {
-    console.log(dish);
+export const updateDish = (dish) => async (dispatch, getState) => {
+    await dishesAPI.update(dish, getState().auth.user.uid);
+    dispatch(updateDishAC(dish));
+    message.success('Блюдо отредактированно!');
 }
 
-export const removeDish = (id) => async (dispatch) => {
-    console.log(id);
+export const removeDish = (id) => async (dispatch, getState) => {
+    await dishesAPI.remove(id, getState().auth.user.uid);
+    dispatch(removeDishAC(id));
+    message.success('Блюдо удалено!');
 }
 
 export default dishesReducer;

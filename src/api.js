@@ -71,4 +71,12 @@ export const dishesAPI = {
         const res = await axios.post(`${url}/users/${uid}/dishes/.json`, dish);
         return res.data.name;
     },
+
+    async remove(id, uid) {
+        await axios.delete(`${url}/users/${uid}/dishes/${id}/.json`);
+    },
+
+    async update(dish, uid) {
+        await axios.put(`${url}/users/${uid}/dishes/${dish.id}/.json`, dish);
+    },
 }

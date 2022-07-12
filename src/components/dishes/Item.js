@@ -3,8 +3,7 @@ import styles from './Dishes.module.scss';
 import { Button, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const Item = ({dish}) => {
-    console.log(dish);
+const Item = ({dish, remove, openEdit}) => {
     return (
         <li className={styles.item}>
             <div className={styles.tool}>
@@ -14,7 +13,7 @@ const Item = ({dish}) => {
                         type="text"
                         shape="circle"
                         icon={<DeleteOutlined />}
-                        onClick={() => console.log('remove')}
+                        onClick={() => remove(dish.id)}
                     />
                 </Tooltip>
                 <Tooltip title="Редактировать">
@@ -23,7 +22,7 @@ const Item = ({dish}) => {
                         type="text"
                         shape="circle"
                         icon={<EditOutlined />}
-                        onClick={() => console.log('edit')}
+                        onClick={() => openEdit(dish)}
                     />
                 </Tooltip>
             </div>
@@ -41,24 +40,28 @@ const Item = ({dish}) => {
                     </p>
                 </div>
 
+                <ul className={styles.ingredients}>
+                    {dish.ingredients && dish.ingredients.map(item => <li key={item.id}>{item.title} <small>({item.weight} гр.)</small></li>)}
+                </ul>
+
                 <div className={styles.meta}>
                     <div>На 100 гр.</div>
                     <ul>
                         <li>
                             <b>Калорий, ккал</b>
-                            <span>{parseFloat(dish.hundredGrams.kcal).toFixed(2)}</span>
+                            <span>{dish.hundredGrams.kcal}</span>
                         </li>
                         <li>
                             <b>Белков, гр</b>
-                            <span>{parseFloat(dish.hundredGrams.squirrels).toFixed(2)}</span>
+                            <span>{dish.hundredGrams.squirrels}</span>
                         </li>
                         <li>
                             <b>Жиров, гр</b>
-                            <span>{parseFloat(dish.hundredGrams.fats).toFixed(2)}</span>
+                            <span>{dish.hundredGrams.fats}</span>
                         </li>
                         <li>
                             <b>Углеводов, гр</b>
-                            <span>{parseFloat(dish.hundredGrams.carbohydrates).toFixed(2)}</span>
+                            <span>{dish.hundredGrams.carbohydrates}</span>
                         </li>
                     </ul>
                 </div>

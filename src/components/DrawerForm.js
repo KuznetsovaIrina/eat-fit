@@ -11,6 +11,7 @@ const DrawerForm = ({
     data = {},
     title,
     addCategory,
+    addIngredient,
     categories
 }) => {
     return (
@@ -29,6 +30,7 @@ const DrawerForm = ({
                 data={data}
                 isAdmin={isAdmin}
                 categories={categories}
+                addIngredient={addIngredient}
             />
         </Drawer>
     )

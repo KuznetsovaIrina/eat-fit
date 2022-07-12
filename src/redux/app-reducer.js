@@ -23,8 +23,13 @@ const appReducer = (state = initialState, action) => {
 export const initializedSuccess = () => ({type: INITIALIZED_SUCCESS});
 
 export const initializeApp = () => async (dispatch) => {
-    await dispatch(getAuthData());
+    const userData = await dispatch(getAuthData());
     const categories = await ingredientsAPI.getCategories();
+
+    console.log(userData, categories);
+
+    // тут получаю блюда, ингредиенты, категории, норму. И устанавливаю эти данные куда нужно.
+
     dispatch(setCategoriesAC(Object.keys(categories).map(id => ({...categories[id], id }))));
     dispatch(initializedSuccess());
 }

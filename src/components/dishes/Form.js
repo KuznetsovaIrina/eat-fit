@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { ControllerInputNumber, ControllerTextArea, ControllerInput } from './../../util/controllers';
-import { useForm } from 'react-hook-form';
-import { Button, Switch, Select, Input, InputNumber } from 'antd';
+import { useForm, Controller } from 'react-hook-form';
+import { Button, Switch, Select, Input, InputNumber, Space, Typography } from 'antd';
 import styles from './Dishes.module.scss';
+import { PlusOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 const { Option } = Select;
-
-
 
 
 const ListItem = ({item, list, setList}) => {
     const onChangeWeight = value => {
-        setList(list.map(l => l.id === item.id ? {...l, weight: value} : l))
+        setList(list.map(
+            ingredient => ingredient.id === item.id ? { ...ingredient, weight: value} : ingredient)
+        );
     }
 
     return (
-        <tr key={item.id}>
+        <tr>
             <td>{item.title}</td>
             <td>
                 <InputNumber
@@ -33,26 +35,112 @@ const ListItem = ({item, list, setList}) => {
     )
 }
 
+const FormAddNewIngredient = ({addIngredient}) => {
+    const [newIngredient, setNewIngredient] = useState({
+        title: '',
+        kcal: null,
+        squirrels: null,
+        fats: null,
+        carbohydrates: null,
+    });
 
-const Form = ({ data = {}, add, categories, close }) => {
-    const { handleSubmit, reset, watch, control } = useForm({ defaultValues: data });
+    const onAddIngredient = () => {
+        const isNotError = newIngredient.title.trim().length
+            && newIngredient.kcal !== null
+            && newIngredient.squirrels !== null
+            && newIngredient.fats !== null
+            && newIngredient.carbohydrates !== null;
+
+        if (isNotError) {
+            addIngredient(newIngredient);
+            setNewIngredient({
+                title: '',
+                kcal: null,
+                squirrels: null,
+                fats: null,
+                carbohydrates: null,
+            })
+        } else {
+            message.error('Необходимо заполнить все поля')
+        }
+    }
+
+    return (
+        <div className={styles.newIngredientForm}>
+            <label className={styles.labelNewIngredient}>
+                Добавить новый
+                <small>После успешного добавления, выберите его из списка</small>
+            </label>
+            <Space>
+                <Input
+                    value={newIngredient.title}
+                    placeholder='Название'
+                    onChange={e => setNewIngredient({...newIngredient, title: e.target.value})}
+                />
+
+                <InputNumber
+                    value={newIngredient.kcal}
+                    placeholder='Калорий на 100 гр.'
+                    min={0}
+                    onChange={value => setNewIngredient({...newIngredient, kcal: value})}
+                />
+                <InputNumber
+                    value={newIngredient.squirrels}
+                    placeholder='Белков на 100 гр.'
+                    min={0}
+                    onChange={value => setNewIngredient({...newIngredient, squirrels: value})}
+                />
+                <InputNumber
+                    value={newIngredient.fats}
+                    placeholder='Жиров на 100 гр.'
+                    min={0}
+                    onChange={value => setNewIngredient({...newIngredient, fats: value})}
+                />
+                <InputNumber
+                    value={newIngredient.carbohydrates}
+                    placeholder='Углеводов на 100 гр.'
+                    min={0}
+                    onChange={value => setNewIngredient({...newIngredient, carbohydrates: value})}
+                />
+                <Typography.Link onClick={onAddIngredient}>
+                    <PlusOutlined /> Добавить
+                </Typography.Link>
+            </Space>
+        </div>
+    )
+}
+
+const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
+    const { handleSubmit, reset, resetField, watch, control } = useForm({ defaultValues: {
+        ...data,
+        kcal: edit ? data.hundredGrams.kcal : '',
+        fats: edit ? data.hundredGrams.fats : '',
+        carbohydrates: edit ? data.hundredGrams.carbohydrates : '',
+        squirrels: edit ? data.hundredGrams.squirrels : '',
+        ingredients: edit && data.ingredients ? data.ingredients.map(i => i.id) : []
+    } });
+
     const [image, setImage] = useState(data ? data.imageURL : null);
+    const [withIngredients, setWithIngredients] = useState(add ? true : data.total);
+    const [list, setList] = useState(data.ingredients || []);
+    
     const watchImage = watch('imageURL');
-    
-    const [withIngredients, setWithIngredients] = useState(true);
-    const [list, setList] = useState([]);
-    
-    const [totalWeight, setTotalWeight] = useState(0);
-    const [totalCalories, setTotalCalories] = useState(0);
-    const [totalSquirrels, setTotalSquirrels] = useState(0);
-    const [totalFats, setTotalFats] = useState(0);
-    const [totalCarbohydrates, setTotalCarbohydrates] = useState(0);
 
-    const [total100GrWeight, setTotal100GrWeight] = useState(100);
-    const [total100GrCalories, setTotal100GrCalories] = useState(0);
-    const [total100GrSquirrels, setTotal100GrSquirrels] = useState(0);
-    const [total100GrFats, setTotal100GrFats] = useState(0);
-    const [total100GrCarbohydrates, setTotal100GrCarbohydrates] = useState(0);
+    const [total, setTotal] = useState({
+        weight: 0,
+        kcal: 0,
+        squirrels: 0,
+        fats: 0,
+        carbohydrates: 0
+    });
+
+    const [hundredGrams, setHundredGrams] = useState({
+        weight: 0,
+        kcal: 0,
+        squirrels: 0,
+        fats: 0,
+        carbohydrates: 0
+    });
     
     useEffect(() => {
         setImage(watchImage);
@@ -61,12 +149,14 @@ const Form = ({ data = {}, add, categories, close }) => {
     useEffect(() => {
         if (list.length) {
             list.reduce((prev, current) => {
-                setTotalWeight(prev.w + current.weight);
-                setTotalCalories(prev.k + current.kcal / 100 * current.weight);
-                setTotalSquirrels(prev.s + current.squirrels / 100 * current.weight);
-                setTotalFats(prev.f + current.fats / 100 * current.weight);
-                setTotalCarbohydrates(prev.c + current.carbohydrates / 100 * current.weight);
-
+                setTotal({
+                    weight: prev.w + current.weight,
+                    kcal: parseFloat(prev.k + current.kcal / 100 * current.weight).toFixed(2),
+                    squirrels: parseFloat(prev.s + current.squirrels / 100 * current.weight).toFixed(2),
+                    fats: parseFloat(prev.f + current.fats / 100 * current.weight).toFixed(2),
+                    carbohydrates: parseFloat(prev.c + current.carbohydrates / 100 * current.weight).toFixed(2)
+                })
+    
                 return {
                     w: prev.w + current.weight,
                     k: prev.k + current.kcal / 100 * current.weight,
@@ -74,25 +164,39 @@ const Form = ({ data = {}, add, categories, close }) => {
                     f: prev.f + current.fats / 100 * current.weight,
                     c: prev.c + current.carbohydrates / 100 * current.weight
                 }
-            }, {w: 0, k: 0, s: 0, f: 0, c: 0});
-            
-            setTotal100GrCalories(totalCalories / totalWeight * 100);
-            setTotal100GrSquirrels(totalSquirrels / totalWeight * 100);
-            setTotal100GrFats(totalFats / totalWeight * 100);
-            setTotal100GrCarbohydrates(totalCarbohydrates / totalWeight * 100);
+            }, { w: 0, k: 0, s: 0, f: 0, c: 0 });
+
         } else {
-            setTotalWeight(0);
-            setTotalCalories(0);
-            setTotalSquirrels(0);
-            setTotalFats(0);
-            setTotalCarbohydrates(0);
-            setTotal100GrWeight(0);
-            setTotal100GrCalories(0);
-            setTotal100GrSquirrels(0);
-            setTotal100GrFats(0);
-            setTotal100GrCarbohydrates(0);
+            setTotal({
+                weight: 0,
+                kcal: 0,
+                squirrels: 0,
+                fats: 0,
+                carbohydrates: 0
+            })
         }
     }, [list])
+
+    useEffect(() => {
+        if (total.weight > 0) {
+            setHundredGrams({
+                weight: 100,
+                kcal: parseFloat(total.kcal / total.weight * 100).toFixed(2),
+                squirrels: parseFloat(total.squirrels / total.weight * 100).toFixed(2),
+                fats: parseFloat(total.fats / total.weight * 100).toFixed(2),
+                carbohydrates: parseFloat(total.carbohydrates / total.weight * 100).toFixed(2)
+            });
+        } else {
+            setHundredGrams({
+                weight: 0,
+                kcal: 0,
+                squirrels: 0,
+                fats: 0,
+                carbohydrates: 0
+            });
+        }
+        
+    }, [total])
 
     const onSubmit = formData => {
         const dish = {
@@ -102,23 +206,12 @@ const Form = ({ data = {}, add, categories, close }) => {
         }
 
         if (withIngredients) {
-            dish.total = {
-                kcal: totalCalories,
-                squirrels: totalSquirrels,
-                fats: totalFats,
-                carbohydrates: totalCarbohydrates,
-                weight: totalWeight,
-            };
-
+            dish.total = total;
             dish.ingredients = list;
+            dish.hundredGrams = hundredGrams;
+        }
 
-            dish.hundredGrams = {
-                kcal: total100GrCalories,
-                squirrels: total100GrSquirrels,
-                fats: total100GrFats,
-                carbohydrates: total100GrCarbohydrates,
-            }
-        } else {
+        if (!withIngredients) {
             dish.hundredGrams = {
                 kcal: formData.kcal,
                 squirrels: formData.squirrels,
@@ -127,181 +220,190 @@ const Form = ({ data = {}, add, categories, close }) => {
             }
         }
 
-        add(dish);
+        if (edit) {
+            dish.id = data.id
+        }
+
+        add ? add(dish) : edit(dish);
+
         reset();
+        resetField('ingredients');
+        setList([]);
         close();
     }
 
-    const onChangeWithIngredients = (checked) => {
-        setWithIngredients(checked);
-    }
-
     const addListItem = (value) => {
-        setList([
-            ...list,
-            categories.find(c => {
-                setTotalWeight(totalWeight + c.weight);
-                setTotalCalories(totalCalories + c.kcal);
-                setTotalSquirrels(totalSquirrels + c.squirrels);
-                setTotalFats(totalFats + c.fats);
-                setTotalCarbohydrates(totalCarbohydrates + c.carbohydrates);
-                return c.id === value;
-            })
-        ]);
+        const item = categories.find(c => c.id === value);
+        setList([ ...list, item ]);
     }
 
     const removeListItem = (value) => {
-        setList([
-            ...list.filter(l => l.id !== value)
-        ]);
+        setList([ ...list.filter(l => l.id !== value) ]);
     }
 
     return (
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-            <div>
-                <div
-                    style={{ backgroundImage: `url(${image})` }}
-                />
-                <ControllerInput
-                    control={control}
-                    name='imageURL'
-                    placeholder='Ссылка на изображение'
-                />
-            </div>
-
-            <div>
-                <label>Название</label>
-                <ControllerInput
-                    control={control}
-                    name='title'
-                    rules={{ required: 'Это поле обязательно' }}
-                />
-            </div>
-
-            <div>
-                <label>Описание</label>
-                <ControllerTextArea
-                    control={control}
-                    name='description'
-                />
-            </div>
-
-            <div>
-                <Switch checked={withIngredients} onChange={onChangeWithIngredients} /> Сготовить из ингредиентов
-            </div>
-
-            {!withIngredients
-                ?
-                <div className={styles.wrap}>
-                    <div>
-                        <label>Калорий (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            style={{width: '100%'}}
-                            name='kcal'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                    <div>
-                        <label>Белков (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            style={{width: '100%'}}
-                            name='squirrels'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                    <div>
-                        <label>Жиров (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            style={{width: '100%'}}
-                            name='fats'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                    <div>
-                        <label>Углеводов (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            style={{width: '100%'}}
-                            name='carbohydrates'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
+            <div className={styles.smallCol}>
+                <div>
+                    <div
+                        className={styles.imagePreview}
+                        style={{ backgroundImage: `url(${image})` }}
+                    />
+                    <ControllerInput
+                        control={control}
+                        name='imageURL'
+                        placeholder='Ссылка на изображение'
+                    />
                 </div>
-                :
-                <div className={styles.ingredients}>
-                    <Select
-                        mode='multiple'
-                        showSearch
-                        style={{ width: '100%' }}
-                        optionFilterProp="children"
-                        onDeselect={removeListItem}
-                        onSelect={addListItem}
-                    >
-                        {categories.map(c => <Option key={c.id} value={c.id}>{c.title}</Option>)}
-                    </Select>
 
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <td>Ингредиент</td>
-                                <td>Вес, гр</td>
-                                <td>Калорий, ккал</td>
-                                <td>Белков, гр</td>
-                                <td>Жиров, гр</td>
-                                <td>Углеводов, гр</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {list.length
-                                ?
-                                    list.map(item =>
-                                        <ListItem
-                                            setList={setList}
-                                            key={item.id}
-                                            item={item}
-                                            list={list}
-                                        />
-                                    )
-                                :
-                                    <tr>
-                                        <td>Нет добавленных ингредиентов</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td>Итого:</td>
-                                <td>{parseFloat(totalWeight).toFixed(2)}</td>
-                                <td>{parseFloat(totalCalories).toFixed(2)}</td>
-                                <td>{parseFloat(totalSquirrels).toFixed(2)}</td>
-                                <td>{parseFloat(totalFats).toFixed(2)}</td>
-                                <td>{parseFloat(totalCarbohydrates).toFixed(2)}</td>
-                            </tr>
-                            <tr>
-                                <td>Итого на 100 грамм:</td>
-                                <td>{parseFloat(total100GrWeight).toFixed(2)}</td>
-                                <td>{parseFloat(total100GrCalories).toFixed(2)}</td>
-                                <td>{parseFloat(total100GrSquirrels).toFixed(2)}</td>
-                                <td>{parseFloat(total100GrFats).toFixed(2)}</td>
-                                <td>{parseFloat(total100GrCarbohydrates).toFixed(2)}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div>
+                    <label className={styles.label}>Название</label>
+                    <ControllerInput
+                        control={control}
+                        name='title'
+                        rules={{ required: 'Это поле обязательно' }}
+                    />
                 </div>
-            }
 
+                <div>
+                    <label className={styles.label}>Описание</label>
+                    <ControllerTextArea
+                        control={control}
+                        name='description'
+                    />
+                </div>
 
-            <Button type='primary' size='large' htmlType='submit'>
-                {add ? 'Добавить' : 'Редактировать'}
-            </Button>
+                <div>
+                    <Switch checked={withIngredients} onChange={checked => setWithIngredients(checked)} />
+                    <span className={styles.switchText}>Сготовить из ингредиентов</span>
+                </div>
+            </div>
+
+            <div className={styles.bigCol}>
+                {!withIngredients
+                    ?
+                    <>
+                        <div>
+                            <label className={styles.label}>Калорий (на 100 гр.)</label>
+                            <ControllerInputNumber
+                                control={control}
+                                style={{width: '100%'}}
+                                name='kcal'
+                                rules={{ required: 'Это поле обязательно' }}
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Белков (на 100 гр.)</label>
+                            <ControllerInputNumber
+                                control={control}
+                                style={{width: '100%'}}
+                                name='squirrels'
+                                rules={{ required: 'Это поле обязательно' }}
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Жиров (на 100 гр.)</label>
+                            <ControllerInputNumber
+                                control={control}
+                                style={{width: '100%'}}
+                                name='fats'
+                                rules={{ required: 'Это поле обязательно' }}
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Углеводов (на 100 гр.)</label>
+                            <ControllerInputNumber
+                                control={control}
+                                style={{width: '100%'}}
+                                name='carbohydrates'
+                                rules={{ required: 'Это поле обязательно' }}
+                            />
+                        </div>
+                    </>
+                    :
+                    <div className={styles.ingredients}>
+                        <label className={styles.label}>Ингредиенты</label>
+                        
+                        <FormAddNewIngredient addIngredient={addIngredient}  />
+                        
+                        <Controller
+                            control={control}
+                            name={'ingredients'}
+                            rules={{ required: 'Это поле обязательно' }}
+                            render={({
+                                field: { name, value, onChange },
+                                formState: { errors }
+                            }) => (
+                                <>
+                                    <Select
+                                        value={value}
+                                        onChange={onChange}
+                                        mode='multiple'
+                                        showSearch
+                                        style={{ width: '100%' }}
+                                        optionFilterProp="children"
+                                        onDeselect={removeListItem}
+                                        onSelect={addListItem}
+                                        placeholder='Выберите ингредиенты из списка'
+                                    >
+                                        {categories.map(c => <Option key={c.id} value={c.id}>{c.title}</Option>)}
+                                    </Select>
+                                    {errors[name] && <span style={styles.error}>{errors[name].message}</span>}
+                                </>
+                            )}
+                        />
+
+                        <table className={styles.table}>
+                            <thead>
+                                <tr>
+                                    <td>Ингредиент</td>
+                                    <td>Вес, гр</td>
+                                    <td>Калорий, ккал</td>
+                                    <td>Белков, гр</td>
+                                    <td>Жиров, гр</td>
+                                    <td>Углеводов, гр</td>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {list.length ? list.map(item =>
+                                    <ListItem
+                                        setList={setList}
+                                        key={item.id}
+                                        item={item}
+                                        list={list}
+                                    />)
+                                : <tr><td>Нет добавленных ингредиентов</td></tr>}
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <td>Итого:</td>
+                                    <td>{total.weight}</td>
+                                    <td>{total.kcal}</td>
+                                    <td>{total.squirrels}</td>
+                                    <td>{total.fats}</td>
+                                    <td>{total.carbohydrates}</td>
+                                </tr>
+                                <tr>
+                                    <td>Итого на 100 грамм:</td>
+                                    <td>{hundredGrams.weight}</td>
+                                    <td>{hundredGrams.kcal}</td>
+                                    <td>{hundredGrams.squirrels}</td>
+                                    <td>{hundredGrams.fats}</td>
+                                    <td>{hundredGrams.carbohydrates}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                }
+            </div>
+
+            <div className={styles.submit}>
+                <Button type='primary' size='large' htmlType='submit'>
+                    {add ? 'Добавить' : 'Редактировать'}
+                </Button>
+            </div>
         </form>
     )
 }
