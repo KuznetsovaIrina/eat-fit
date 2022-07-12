@@ -11,7 +11,7 @@ const Item = ({ingredient, remove, openEdit, index, isAdmin, currentCategory}) =
                     <span className={styles.index}>{++index}.</span>
                     <div
                         className={styles.image}
-                        style={{backgroundImage: `url(${ingredient.imageURL})`}}
+                        style={ingredient.imageURL && {backgroundImage: `url(${ingredient.imageURL})`}}
                     />
                     <div className={styles.title}>
                         {ingredient.title}

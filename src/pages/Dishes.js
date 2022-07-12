@@ -4,22 +4,13 @@ import DrawerForm from './../components/DrawerForm'
 import List from './../components/dishes/List';
 import Form from './../components/dishes/Form';
 import { connect } from 'react-redux';
-import {
-    addDish,
-    updateDish,
-    removeDish
-} from './../redux/dishes-reducer'
+import { addDish, updateDish, removeDish } from './../redux/dishes-reducer'
 import { addIngredient } from './../redux/ingredients-reducer'
+import { getAllIngredientsWithDefaultWeight } from './../redux/ingredients-selector'
 
 
-const Dishes = ({categories, ingredients, dishes, addDish, updateDish, removeDish, addIngredient}) => {
+const Dishes = ({allIngredients, dishes, addDish, updateDish, removeDish, addIngredient}) => {
     const [visible, setVisible] = useState(false);
-    
-    const allIngredients = [];
-    ingredients.map(i => allIngredients.push({...i, category: 'user', weight: 100}));
-    categories.map(c => 
-        Object.keys(c.ingredients).map(id => allIngredients.push({...c.ingredients[id], id, weight: 100}))
-    );
 
     return (
         <>
@@ -53,8 +44,7 @@ const Dishes = ({categories, ingredients, dishes, addDish, updateDish, removeDis
 }
 
 const mapStateToProps = (state) => ({
-    ingredients: state.ingredients.ingredients,
-    categories: state.ingredients.categories,
+    allIngredients: getAllIngredientsWithDefaultWeight(state),
     dishes: state.dishes.dishes
 })
 

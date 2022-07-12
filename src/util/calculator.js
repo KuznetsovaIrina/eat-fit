@@ -1,10 +1,3 @@
-const calculationWomenNorm = (weight, growth, age, activity) => (447.6 + (9.2 * weight) + (3.1 * growth) - (4.3 * age)) * activity
-const calculationManNorm = (weight, growth, age, activity) => (88.36 + (13.4 * weight) + (4.8 * growth) - (5.7 * age)) * activity;
-const normWithResetWeight = (norm, percent) => norm - (norm / 100 * percent);
-const getSquirrels = norm => Math.round(norm * (bjuRatioPercentage.squirrels / 100) / caloriesToGrams.squirrels);
-const getFats = norm => Math.round(norm * (bjuRatioPercentage.fats / 100) / caloriesToGrams.fats);
-const getCarbohydrates = norm => Math.round(norm * (bjuRatioPercentage.carbohydrates / 100) / caloriesToGrams.carbohydrates);
-
 export const GENDER_MALE = 'male';
 export const GENDER_FEMALE = 'female';
 export const TARGET_RESET = 'reset';
@@ -13,6 +6,18 @@ export const TARGET_SUPPORT = 'support';
 export const genders = {
     [GENDER_MALE]: 'Мужской',
     [GENDER_FEMALE]: 'Женский'
+}
+
+const caloriesToGrams = {
+    squirrels: 4,
+    fats: 9,
+    carbohydrates: 4
+}
+
+const bjuRatioPercentage = {
+    squirrels: 30,
+    fats: 30,
+    carbohydrates: 40
 }
 
 export const targets = {
@@ -45,17 +50,12 @@ export const activityFactors = [
 
 export const getActivityFactorByValue = value => activityFactors.find(factor => factor.value === value);
 
-const caloriesToGrams = {
-    squirrels: 4,
-    fats: 9,
-    carbohydrates: 4
-}
-
-const bjuRatioPercentage = {
-    squirrels: 30,
-    fats: 30,
-    carbohydrates: 40
-}
+const calculationWomenNorm = (weight, growth, age, activity) => (447.6 + (9.2 * weight) + (3.1 * growth) - (4.3 * age)) * activity
+const calculationManNorm = (weight, growth, age, activity) => (88.36 + (13.4 * weight) + (4.8 * growth) - (5.7 * age)) * activity;
+const normWithResetWeight = (norm, percent) => norm - (norm / 100 * percent);
+const getSquirrels = norm => Math.round(norm * (bjuRatioPercentage.squirrels / 100) / caloriesToGrams.squirrels);
+const getFats = norm => Math.round(norm * (bjuRatioPercentage.fats / 100) / caloriesToGrams.fats);
+const getCarbohydrates = norm => Math.round(norm * (bjuRatioPercentage.carbohydrates / 100) / caloriesToGrams.carbohydrates);
 
 export const calculationNorm = (gender, weight, growth, age, activity, target) => {
     let norm;

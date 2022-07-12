@@ -28,7 +28,7 @@ const Item = ({dish, remove, openEdit}) => {
             </div>
             <div
                 className={styles.image}
-                style={{backgroundImage: `url(${dish.imageURL})`}}
+                style={dish.imageURL && {backgroundImage: `url(${dish.imageURL})`}}
             />
             <div className={styles.info}>
                 <div className={styles.header}>

@@ -51,7 +51,7 @@ export const ControllerInput = ({ control, name, rules = {}, placeholder = '' })
     )
 }
 
-export const ControllerSelect = ({ control, name, rules = {}, placeholder = '', options, dropdown  }) => {
+export const ControllerSelect = ({ control, name, rules = {}, placeholder = '', options, dropdown }) => {
     return (
         <Controller
             control={control}

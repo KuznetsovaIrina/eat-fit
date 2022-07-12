@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ControllerInputNumber, ControllerTextArea, ControllerInput } from './../../util/controllers';
 import { useForm, Controller } from 'react-hook-form';
-import { Button, Switch, Select, Input, InputNumber, Space, Typography } from 'antd';
+import { Button, Switch, Select, Input, InputNumber, Space, Typography, Tag } from 'antd';
 import styles from './Dishes.module.scss';
 import { PlusOutlined } from '@ant-design/icons';
 import { message } from 'antd';
@@ -120,6 +120,8 @@ const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
         ingredients: edit && data.ingredients ? data.ingredients.map(i => i.id) : []
     } });
 
+    const getCategory = (id) => categories.find(c => c.id === id);
+
     const [image, setImage] = useState(data ? data.imageURL : null);
     const [withIngredients, setWithIngredients] = useState(add ? true : data.total);
     const [list, setList] = useState(data.ingredients || []);
@@ -233,6 +235,7 @@ const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
     }
 
     const addListItem = (value) => {
+        console.log(value);
         const item = categories.find(c => c.id === value);
         setList([ ...list, item ]);
     }
@@ -345,6 +348,27 @@ const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
                                         onDeselect={removeListItem}
                                         onSelect={addListItem}
                                         placeholder='Выберите ингредиенты из списка'
+                                        tagRender={({ label, value, closable, onClose, onPreventMouseDown }) => {
+                                            return (
+                                                <Tag
+                                                    color='default'
+                                                    onMouseDown={onPreventMouseDown}
+                                                    closable={closable}
+                                                    onClose={onClose}
+                                                    style={{margin: '3px', fontSize: '14px', fontWeight: '600'}}
+                                                >
+                                                    {label !== value
+                                                        ?
+                                                        label
+                                                        :
+                                                        <>
+                                                        { list.find(c => c.id === label).title }
+                                                        <small> (был удален)</small>
+                                                        </>
+                                                    }
+                                                </Tag>
+                                            )
+                                        }}
                                     >
                                         {categories.map(c => <Option key={c.id} value={c.id}>{c.title}</Option>)}
                                     </Select>

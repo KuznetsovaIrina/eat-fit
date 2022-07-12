@@ -1,5 +1,6 @@
 import { ingredientsAPI } from './../api';
 import { message } from 'antd';
+import { objToArray } from './../util/helpers';
 
 const SET_INGREDIENTS = 'ingredients/SET_INGREDIENTS';
 const ADD_INGREDIENT = 'ingredients/ADD_INGREDIENT';
@@ -7,10 +8,12 @@ const UPDATE_INGREDIENT = 'ingredients/UPDATE_INGREDIENT';
 const REMOVE_INGREDIENT = 'ingredients/REMOVE_INGREDIENT';
 const ADD_CATEGORY = 'ingredients/ADD_CATEGORY';
 const SET_CATEGORIES = 'ingredients/SET_CATEGORIES';
+const SET_ALL_INGREDIENTS = 'ingredients/SET_ALL_INGREDIENTS';
 
 const initialState = {
     ingredients: [],
     categories: [],
+    allIngredients: [],
 };
 
 const ingredientsReducer = (state = initialState, action) => {
@@ -20,20 +23,28 @@ const ingredientsReducer = (state = initialState, action) => {
                 ...state,
                 ingredients: action.payload
             }
+        case SET_ALL_INGREDIENTS:
+            return {
+                ...state,
+                allIngredients: action.payload
+            }
         case ADD_INGREDIENT:
             return {
                 ...state,
-                ingredients: [...state.ingredients, action.payload]
+                ingredients: [...state.ingredients, action.payload],
+                allIngredients: [action.payload, ...state.allIngredients],
             }
         case UPDATE_INGREDIENT:
             return {
                 ...state,
-                ingredients: state.ingredients.map(i => i.id === action.payload.id ? action.payload : i)
+                ingredients: state.ingredients.map(i => i.id === action.payload.id ? action.payload : i),
+                allIngredients: state.allIngredients.map(i => i.id === action.payload.id ? action.payload : i)
             }
         case REMOVE_INGREDIENT:
             return {
                 ...state,
-                ingredients: state.ingredients.filter(i => i.id !== action.payload)
+                ingredients: state.ingredients.filter(i => i.id !== action.payload),
+                allIngredients: state.allIngredients.filter(i => i.id !== action.payload)
             }
         case SET_CATEGORIES:
             return {
@@ -51,6 +62,7 @@ const ingredientsReducer = (state = initialState, action) => {
 }
 
 export const setIngredientsAC = (ingredients) => ({type: SET_INGREDIENTS, payload: ingredients});
+export const setAllIngredientsAC = (ingredients) => ({type: SET_ALL_INGREDIENTS, payload: ingredients});
 export const addIngredientAC = (ingredient) => ({type: ADD_INGREDIENT, payload: ingredient});
 export const updateIngredientAC = (ingredient) => ({type: UPDATE_INGREDIENT, payload: ingredient});
 export const removeIngredientAC = (id) => ({type: REMOVE_INGREDIENT, payload: id});
@@ -98,7 +110,7 @@ export const setIngredients = (categoryId) => async (dispatch, getState) => {
         : await ingredientsAPI.getByCategory(categoryId);
 
     ingredients
-        ? dispatch(setIngredientsAC(Object.keys(ingredients).map(id => ({...ingredients[id], id}))))
+        ? dispatch(setIngredientsAC(objToArray(ingredients)))
         : dispatch(setIngredientsAC([]));
 }
 
