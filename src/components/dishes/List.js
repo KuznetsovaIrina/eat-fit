@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Item from './Item';
 import Form from './Form';
-import DrawerForm from '../DrawerForm';
 import styles from './Dishes.module.scss';
+import DrawerForm from '../DrawerForm';
 
-const List = ({dishes, remove, edit, categories, addIngredient}) => {
+const List = ({dishes, remove, edit, allIngredients, addIngredient}) => {
     const [visible, setVisible] = useState(false);
     const [editableObj, setEditableObj] = useState({});
 
-    const openEdit = (dish) => {
-        setEditableObj(dish);
+    const openEdit = (object) => {
+        setEditableObj(object);
         setVisible(true);
     }
 
@@ -20,17 +20,19 @@ const List = ({dishes, remove, edit, categories, addIngredient}) => {
 
     return (
         <>
-            {visible &&
-                <DrawerForm
-                    visible={visible}
-                    Form={Form}
+            <DrawerForm
+                title='Редактировать'
+                close={closeEdit}
+                visible={visible}
+            >
+                <Form
                     edit={edit}
-                    data={editableObj}
                     close={closeEdit}
-                    categories={categories}
+                    data={editableObj}
+                    allIngredients={allIngredients}
                     addIngredient={addIngredient}
                 />
-            }
+            </DrawerForm>
 
             <ul className={styles.list}>
                 {dishes.map(dish =>

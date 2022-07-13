@@ -8,8 +8,8 @@ const List = ({isAdmin, addCategory, categories, ingredients, remove, edit, curr
     const [visible, setVisible] = useState(false);
     const [editableObj, setEditableObj] = useState({});
 
-    const openEdit = (ingredient) => {
-        setEditableObj(ingredient);
+    const openEdit = (object) => {
+        setEditableObj(object);
         setVisible(true);
     }
 
@@ -20,18 +20,20 @@ const List = ({isAdmin, addCategory, categories, ingredients, remove, edit, curr
 
     return (
         <>
-            {visible &&
-                <DrawerForm
-                    visible={visible}
-                    Form={Form}
+            <DrawerForm
+                title='Редактировать'
+                close={closeEdit}
+                visible={visible}
+            >
+                <Form
                     edit={edit}
-                    data={editableObj}
                     close={closeEdit}
-                    isAdmin={isAdmin}
-                    addCategory={addCategory}
+                    data={editableObj}
                     categories={categories}
+                    addCategory={addCategory}
+                    isAdmin={isAdmin}
                 />
-            }
+            </DrawerForm>
 
             <table className={styles.list}>
                 <thead>

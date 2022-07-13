@@ -11,7 +11,7 @@ import {
 import Form from './../components/ingredients/Form';
 import List from './../components/ingredients/List';
 import Categories from './../components/ingredients/Categories';
-import DrawerForm from '../components/DrawerForm';
+import DrawerForm from './../components/DrawerForm';
 import { Button, Space } from 'antd';
 
 
@@ -58,24 +58,23 @@ const Ingredients = ({
                 >
                     Добавить
                 </Button>
-                {isAdmin &&
-                    <Button onClick={() => console.log(currentCategory)}>
-                        Выгрузить из json
-                    </Button>
-                }
+                {isAdmin && <Button onClick={() => console.log(currentCategory)}>Выгрузить из json</Button>}
             </Space>
-            
+
             <DrawerForm
-                visible={visible}
-                Form={Form}
-                add={addIngredient}
-                close={onClose}
                 title='Добавить'
-                isAdmin={isAdmin}
-                addCategory={addCategory}
-                categories={categories}
-            />
-            
+                close={onClose}
+                visible={visible}
+            >
+                <Form
+                    add={addIngredient}
+                    categories={categories}
+                    addCategory={addCategory}
+                    close={onClose}
+                    isAdmin={isAdmin}
+                />
+            </DrawerForm>
+
             <List
                 ingredients={ingredients}
                 remove={removeIngredient}

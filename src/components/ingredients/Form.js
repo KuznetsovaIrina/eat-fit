@@ -6,7 +6,7 @@ import { Typography, Space } from 'antd';
 import { useForm } from 'react-hook-form';
 import { ControllerInput, ControllerInputNumber, ControllerSelect } from '../../util/controllers';
 
-const Form = ({ isAdmin, add, categories, addCategory, edit, data, close }) => {
+const Form = ({ isAdmin, add, edit, categories, addCategory, data, close }) => {
     const { handleSubmit, reset, watch, control } = useForm({ defaultValues: data });
     const [image, setImage] = useState(data ? data.imageURL : null);
     const [categoryTitle, setCategoryTitle] = useState('');

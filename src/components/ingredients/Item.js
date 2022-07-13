@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './ingredients.module.scss';
 import { Button } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {USER_CATEGORY_INGREDIENTS} from './../../util/helpers';
 
 const Item = ({ingredient, remove, openEdit, index, isAdmin, currentCategory}) => {
     return (
@@ -31,7 +32,7 @@ const Item = ({ingredient, remove, openEdit, index, isAdmin, currentCategory}) =
                 {ingredient.carbohydrates}
             </td>
             <td>
-                {(currentCategory === 'user' || isAdmin) &&
+                {(currentCategory === USER_CATEGORY_INGREDIENTS || isAdmin) &&
                     <div className={styles.tools}>
                         <Button onClick={() => openEdit(ingredient)} shape="circle" icon={<EditOutlined  />} size='small' />
                         <Button onClick={() => remove(ingredient.id, currentCategory)} shape="circle" icon={<DeleteOutlined  />} size='small' />

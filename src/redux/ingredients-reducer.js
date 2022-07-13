@@ -1,6 +1,7 @@
 import { ingredientsAPI } from './../api';
 import { message } from 'antd';
 import { objToArray } from './../util/helpers';
+import {USER_CATEGORY_INGREDIENTS} from './../util/helpers';
 
 const SET_INGREDIENTS = 'ingredients/SET_INGREDIENTS';
 const ADD_INGREDIENT = 'ingredients/ADD_INGREDIENT';
@@ -91,7 +92,7 @@ export const updateIngredient = (ingredient, categoryId, oldCategoryId) => async
 }
 
 export const removeIngredient = (id, categoryId, isRemoval = true) => async (dispatch, getState) => {
-    categoryId !== 'user'
+    categoryId !== USER_CATEGORY_INGREDIENTS
         ? await ingredientsAPI.remove(id, getState().auth.user.uid, categoryId)
         : await ingredientsAPI.remove(id, getState().auth.user.uid, null);
 
@@ -105,7 +106,7 @@ export const removeIngredient = (id, categoryId, isRemoval = true) => async (dis
 }
 
 export const setIngredients = (categoryId) => async (dispatch, getState) => {
-    const ingredients = categoryId === 'user'
+    const ingredients = categoryId === USER_CATEGORY_INGREDIENTS
         ? await ingredientsAPI.getByUser(getState().auth.user.uid)
         : await ingredientsAPI.getByCategory(categoryId);
 

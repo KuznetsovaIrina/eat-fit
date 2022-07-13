@@ -110,17 +110,15 @@ const FormAddNewIngredient = ({addIngredient}) => {
     )
 }
 
-const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
+const Form = ({ data = {}, add, edit, addIngredient, allIngredients, close }) => {
     const { handleSubmit, reset, resetField, watch, control } = useForm({ defaultValues: {
         ...data,
-        kcal: edit ? data.hundredGrams.kcal : '',
-        fats: edit ? data.hundredGrams.fats : '',
-        carbohydrates: edit ? data.hundredGrams.carbohydrates : '',
-        squirrels: edit ? data.hundredGrams.squirrels : '',
-        ingredients: edit && data.ingredients ? data.ingredients.map(i => i.id) : []
+        kcal: data.hundredGrams ? data.hundredGrams.kcal : '',
+        fats: data.hundredGrams ? data.hundredGrams.fats : '',
+        carbohydrates: data.hundredGrams ? data.hundredGrams.carbohydrates : '',
+        squirrels: data.hundredGrams ? data.hundredGrams.squirrels : '',
+        ingredients: data.hundredGrams && data.ingredients ? data.ingredients.map(i => i.id) : []
     } });
-
-    const getCategory = (id) => categories.find(c => c.id === id);
 
     const [image, setImage] = useState(data ? data.imageURL : null);
     const [withIngredients, setWithIngredients] = useState(add ? true : data.total);
@@ -235,8 +233,7 @@ const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
     }
 
     const addListItem = (value) => {
-        console.log(value);
-        const item = categories.find(c => c.id === value);
+        const item = allIngredients.find(c => c.id === value);
         setList([ ...list, item ]);
     }
 
@@ -370,7 +367,7 @@ const Form = ({ data = {}, add, addIngredient, edit, categories, close }) => {
                                             )
                                         }}
                                     >
-                                        {categories.map(c => <Option key={c.id} value={c.id}>{c.title}</Option>)}
+                                        {allIngredients.map(c => <Option key={c.id} value={c.id}>{c.title}</Option>)}
                                     </Select>
                                     {errors[name] && <span style={styles.error}>{errors[name].message}</span>}
                                 </>

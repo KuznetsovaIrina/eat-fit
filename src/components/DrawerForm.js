@@ -1,19 +1,7 @@
 import React from 'react';
 import { Drawer } from 'antd';
 
-const DrawerForm = ({
-    isAdmin,
-    visible,
-    close,
-    Form,
-    edit,
-    add,
-    data = {},
-    title,
-    addCategory,
-    addIngredient,
-    categories
-}) => {
+const DrawerForm = ({title, visible, close, children}) => {
     return (
         <Drawer
             title={title}
@@ -21,17 +9,9 @@ const DrawerForm = ({
             onClose={close}
             visible={visible}
             size='large'
+            destroyOnClose={true}
         >
-            <Form
-                edit={edit}
-                add={add}
-                addCategory={addCategory}
-                close={close}
-                data={data}
-                isAdmin={isAdmin}
-                categories={categories}
-                addIngredient={addIngredient}
-            />
+            {children}
         </Drawer>
     )
 }
