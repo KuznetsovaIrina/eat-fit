@@ -80,3 +80,23 @@ export const dishesAPI = {
         await axios.put(`${url}/users/${uid}/dishes/${dish.id}/.json`, dish);
     },
 }
+
+export const menuAPI = {
+    async create(meal, uid) {
+        const res = await axios.post(`${url}/users/${uid}/menu/.json`, meal);
+        return res.data.name;
+    },
+
+    async remove(id, uid) {
+        await axios.delete(`${url}/users/${uid}/menu/${id}/.json`);
+    },
+
+    async update(meal, uid) {
+        await axios.put(`${url}/users/${uid}/menu/${meal.id}/.json`, meal);
+    },
+
+    async getAll(uid) {
+        const res = await axios.get(`${url}/users/${uid}/menu.json`);
+        return res.data;
+    }
+}

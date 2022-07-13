@@ -1,0 +1,106 @@
+@import './../../assets/styles/colors';
+
+.menu {
+    display: flex;
+    align-items: flex-start;
+}
+
+.calendar {
+    width: 70%;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(#000, .2);
+}
+
+.header {
+    padding: 15px 15px 5px 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.date {
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.nav {
+    button {
+        margin-left: 10px;
+    }   
+}
+
+.body {
+    padding: 15px;
+    table {
+        width: 100%;
+        thead td {
+            font-weight: 600;
+        }
+        tfoot td {
+            font-weight: 700;
+        }
+        td {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #efefef;
+            width: 120px;
+            text-align: right;
+            &:first-child {
+                width: 250px;
+                text-align: left;
+            }
+        }
+    }
+}
+
+.meals {
+    list-style: none;
+    padding: 0;
+}
+
+.meal {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.mealHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    background-color: $color_attn;
+    color: #fff;
+    padding: 10px 15px;
+    font-weight: 600;
+}
+
+.tools {
+    button {
+        margin-right: 10px;
+    }
+}
+
+.list {
+    padding: 10px;
+}
+
+.userNorm {
+    width: 30%;
+    padding-left: 50px;
+}
+
+.editSelect {
+    margin-bottom: 15px;
+}
+
+.formNewMeal {
+    display: flex;
+    align-items: center;
+    button {
+        margin-left: 15px;
+    }
+}
