@@ -2,9 +2,12 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { CALCULATOR_ROUTE } from './../../router/routes';
 import { Button } from 'antd';
-import styles from './Menu.module.scss';
+import styles from './../../assets/styles/modules/Menu.module.scss';
 
-const Itogo = ({userNorm, total}) => {
+const Itogo = ({
+    userNorm,
+    total
+}) => {
     return (
         <div className={styles.userNorm}>
             {userNorm ?

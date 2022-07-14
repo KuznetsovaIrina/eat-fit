@@ -1,9 +1,13 @@
 import React from 'react';
-import styles from './Dishes.module.scss';
+import styles from './../../assets/styles/modules/Dishes.module.scss';
 import { Button, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const Item = ({dish, remove, openEdit}) => {
+const Item = ({
+    dish,
+    remove,
+    openEdit
+}) => {
     return (
         <li className={styles.item}>
             <div className={styles.tool}>

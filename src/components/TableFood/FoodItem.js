@@ -1,12 +1,14 @@
 import React from 'react';
 import { InputNumber } from 'antd';
-import styles from './Menu.module.scss';
 
-const ListItem = ({ item, list, setList, isEdit }) => {
+const FoodItem = ({
+    item,
+    list,
+    setList,
+    isEdit = true
+}) => {
     const onChangeWeight = value => {
-        setList(list.map(
-            ingredient => ingredient.id === item.id ? { ...ingredient, weight: value } : ingredient)
-        )
+        setList(list.map(i => i.id === item.id ? { ...i, weight: value} : i));
     }
 
     return (
@@ -15,15 +17,15 @@ const ListItem = ({ item, list, setList, isEdit }) => {
             <td>
                 {isEdit
                     ?
-                        <InputNumber
-                            min={1}
-                            style={{ width: '100%' }}
-                            placeholder='вес в гр.'
-                            value={item.weight}
-                            onChange={onChangeWeight}
-                        />
+                    <InputNumber
+                        min={1}
+                        style={{ width: '100%' }}
+                        placeholder='вес в гр.'
+                        value={item.weight}
+                        onChange={onChangeWeight}
+                    />
                     :
-                        item.weight
+                    item.weight
                 }
             </td>
             <td>{parseFloat(item.kcal / 100 * item.weight).toFixed(2)}</td>
@@ -34,4 +36,4 @@ const ListItem = ({ item, list, setList, isEdit }) => {
     )
 }
 
-export default ListItem;
+export default FoodItem;

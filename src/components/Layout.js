@@ -1,10 +1,15 @@
 import React from 'react';
-import { MENU_ROUTE, DISHES_ROUTE, INGREDIENTS_ROUTE, CALCULATOR_ROUTE, DIARY_ROUTE } from './../router/routes';
+import { MENU_ROUTE, DISHES_ROUTE, INGREDIENTS_ROUTE, CALCULATOR_ROUTE } from './../router/routes';
 import { NavLink } from 'react-router-dom';
 import { Button } from 'antd';
 import { CalculatorOutlined } from '@ant-design/icons';
 
-const Layout = ({children, user, login, logout}) => {
+const Layout = ({
+    children,
+    user,
+    login,
+    logout
+}) => {
     return (
         <div className="layout">
             <header className='site-header'>
@@ -15,7 +20,6 @@ const Layout = ({children, user, login, logout}) => {
                         </div>
                         <nav className='menu'>
                             <NavLink to={MENU_ROUTE}>Мое меню</NavLink>
-                            <NavLink to={DIARY_ROUTE}>Дневник питания</NavLink>
                             <NavLink to={INGREDIENTS_ROUTE}>Ингредиенты</NavLink>
                             <NavLink to={DISHES_ROUTE}>Блюда</NavLink>
                         </nav>

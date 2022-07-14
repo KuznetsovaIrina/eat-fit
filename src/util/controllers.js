@@ -31,11 +31,11 @@ export const ControllerInputNumber = ({ control, name, rules = {}, placeholder =
     )
 }
 
-export const ControllerInput = ({ control, name, rules = {}, placeholder = '' }) => {
+export const ControllerInput = ({ control, name, rules = {}, placeholder = '', isShouldUnregister = true }) => {
     return (
         <Controller
             control={control}
-            shouldUnregister={true}
+            shouldUnregister={isShouldUnregister}
             name={name}
             rules={rules}
             render={({

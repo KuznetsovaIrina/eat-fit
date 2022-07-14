@@ -1,10 +1,9 @@
-import {HOME_ROUTE, MENU_ROUTE, DISHES_ROUTE, INGREDIENTS_ROUTE, CALCULATOR_ROUTE, DIARY_ROUTE } from './routes';
+import {HOME_ROUTE, MENU_ROUTE, DISHES_ROUTE, INGREDIENTS_ROUTE, CALCULATOR_ROUTE } from './routes';
 import Home from './../pages/Home';
 import Menu from './../pages/Menu';
 import Dishes from './../pages/Dishes';
 import Ingredients from './../pages/Ingredients';
 import Calculator from './../pages/Calculator';
-import Diary from './../pages/Diary';
 
 export const publicRoutes = [
     {
@@ -29,9 +28,5 @@ export const privateRoutes = [
     {
         path: INGREDIENTS_ROUTE,
         Component: Ingredients
-    },
-    {
-        path: DIARY_ROUTE,
-        Component: Diary
-    },
+    }
 ]

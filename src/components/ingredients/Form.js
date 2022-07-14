@@ -1,49 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import styles from './ingredients.module.scss';
-import { PlusOutlined } from '@ant-design/icons';
-import { Input, Button } from 'antd';
-import { Typography, Space } from 'antd';
+import React, { useState } from 'react';
+import styles from './../../assets/styles/modules/ingredients.module.scss';
+import { Button } from 'antd';
 import { useForm } from 'react-hook-form';
-import { ControllerInput, ControllerInputNumber, ControllerSelect } from '../../util/controllers';
+import { ControllerInput, ControllerSelect } from '../../util/controllers';
+import FormNewCategory from './FormNewCategory';
+import CaloriesField from '../CaloriesField';
+import PreviewImage from '../PreviewImage';
 
-const Form = ({ isAdmin, add, edit, categories, addCategory, data, close }) => {
-    const { handleSubmit, reset, watch, control } = useForm({ defaultValues: data });
-    const [image, setImage] = useState(data ? data.imageURL : null);
-    const [categoryTitle, setCategoryTitle] = useState('');
-
-    const watchImage = watch('imageURL');
-
-    useEffect(() => {
-        setImage(watchImage);
-    }, [watchImage])
+const Form = ({
+    isAdmin,
+    add,
+    edit,
+    categories,
+    addCategory,
+    data,
+    close
+}) => {
+    const { handleSubmit, reset, control } = useForm({ defaultValues: data });
+    const [imageURL, setImageURL] = useState();
 
     const onSubmit = formData => {
         add
-            ? add(formData, formData.category)
-            : edit(formData, formData.category, data.category);
+            ? add({...formData, imageURL}, formData.category)
+            : edit({...formData, imageURL}, formData.category, data.category);
 
         reset();
         close(formData.category, true);
     }
 
-    const onAddCategory = () => {
-        if (categoryTitle.trim().length) {
-            addCategory({ title: categoryTitle.trim() })
-        }
-        setCategoryTitle('');
-    }
-
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
             <div className={styles.boxImage}>
-                <div
-                    className={styles.preview}
-                    style={{ backgroundImage: `url(${image})` }}
-                />
-                <ControllerInput
-                    control={control}
-                    name='imageURL'
-                    placeholder='Ссылка на изображение'
+                <PreviewImage
+                    url={data ? data.imageURL : ''}
+                    setImageURL={setImageURL}
                 />
 
                 {isAdmin &&
@@ -56,12 +46,9 @@ const Form = ({ isAdmin, add, edit, categories, addCategory, data, close }) => {
                             dropdown={(menu) => (
                                 <>
                                     {menu}
-                                    <Space style={{ padding: '10px' }}>
-                                        <Input value={categoryTitle} onChange={(e) => setCategoryTitle(e.target.value)} />
-                                        <Typography.Link onClick={onAddCategory}>
-                                            <PlusOutlined /> Добавить
-                                        </Typography.Link>
-                                    </Space>
+                                    <FormNewCategory
+                                        addCategory={addCategory}
+                                    />
                                 </>
                             )}
                         />
@@ -77,40 +64,9 @@ const Form = ({ isAdmin, add, edit, categories, addCategory, data, close }) => {
                         rules={{ required: 'Это поле обязательно' }}
                     />
                 </div>
-                <div className={styles.wrap}>
-                    <div>
-                        <label className={styles.label}>Калорий (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            name='kcal'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                    <div>
-                        <label className={styles.label}>Белков (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            name='squirrels'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                    <div>
-                        <label className={styles.label}>Жиров (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            name='fats'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                    <div>
-                        <label className={styles.label}>Углеводов (на 100 гр.)</label>
-                        <ControllerInputNumber
-                            control={control}
-                            name='carbohydrates'
-                            rules={{ required: 'Это поле обязательно' }}
-                        />
-                    </div>
-                </div>
+                
+                <CaloriesField control={control} />
+                
                 <div className={styles.submit}>
                     <Button type='primary' size='large' htmlType='submit'>
                         {add ? 'Добавить' : 'Редактировать'}

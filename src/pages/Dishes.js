@@ -8,7 +8,14 @@ import DrawerForm from './../components/DrawerForm';
 import List from './../components/dishes/List';
 import Form from './../components/dishes/Form';
 
-const Dishes = ({allIngredients, dishes, addDish, updateDish, removeDish, addIngredient}) => {
+const Dishes = ({
+    allIngredients,
+    dishes,
+    addDish,
+    updateDish,
+    removeDish,
+    addIngredient
+}) => {
     const [visible, setVisible] = useState(false);
 
     const onClose = () => {

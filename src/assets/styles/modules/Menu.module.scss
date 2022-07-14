@@ -1,4 +1,4 @@
-@import './../../assets/styles/colors';
+@import './../colors';
 
 .menu {
     display: flex;
@@ -33,26 +33,6 @@
 
 .body {
     padding: 15px;
-    table {
-        width: 100%;
-        thead td {
-            font-weight: 600;
-        }
-        tfoot td {
-            font-weight: 700;
-        }
-        td {
-            padding: 5px;
-            font-size: 14px;
-            border: 1px solid #efefef;
-            width: 120px;
-            text-align: right;
-            &:first-child {
-                width: 250px;
-                text-align: left;
-            }
-        }
-    }
 }
 
 .meals {
@@ -93,13 +73,12 @@
     padding-left: 50px;
 }
 
-.editSelect {
-    margin-bottom: 15px;
-}
-
-.formNewMeal {
+.formMeal {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    > div {
+        flex: 1;
+    }
     button {
         margin-left: 15px;
     }

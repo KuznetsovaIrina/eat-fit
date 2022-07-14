@@ -1,7 +1,12 @@
 import React from 'react';
 import { Drawer } from 'antd';
 
-const DrawerForm = ({title, visible, close, children}) => {
+const DrawerForm = ({
+    title,
+    visible,
+    close,
+    children
+}) => {
     return (
         <Drawer
             title={title}

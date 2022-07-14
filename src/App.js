@@ -6,13 +6,12 @@ import { connect } from 'react-redux';
 import { initializeApp } from './redux/app-reducer';
 import { login, logout } from './redux/auth-reducer';
 import Loader from './components/Loader';
-import 'antd/dist/antd.css';
 import './assets/styles/common.scss';
 
 const App = ({ initializeApp, initialized, login, logout, user }) => {
   useEffect(() => {
     initializeApp();
-  }, [])
+  }, [initializeApp]);
 
   if (!initialized) {
     return <Loader />

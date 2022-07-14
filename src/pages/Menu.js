@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { setMenu, addMeal, removeMeal, updateMeal, setCurrentDateAC } from './../redux/menu-reducer';
 import { getAllIngredientsWithDishes, getMealsToday, getTotalToday } from '../redux/selectors';
-import moment from 'moment';
+import { formatDate, DATE_SHOW_FORMAT, addDays, subtractDays, getToday } from './../util/helpers';
 import { ArrowLeftOutlined, CalendarOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import styles from './../components/menu/Menu.module.scss';
+import styles from './../assets/styles/modules/Menu.module.scss';
 import Meal from '../components/menu/Meal';
 import FormMeal from '../components/menu/FormMeal';
 import Itogo from '../components/menu/Itogo';
@@ -21,32 +21,32 @@ const Menu = ({
     setCurrentDateAC,
     total
 }) => {
-    const [currentDate, setCurrentDate] = useState(moment());
+    const [currentDate, setCurrentDate] = useState(getToday());
 
     useEffect(() => {
         setMenu();
-    }, []);
+    }, [currentDate, setMenu]);
 
     useEffect(() => {
-        setCurrentDateAC(moment(currentDate).format('YYYY-MM-DD'));
-    }, [currentDate]);
+        setCurrentDateAC(formatDate(currentDate));
+    }, [currentDate, setCurrentDateAC]);
 
     const prevDay = () => {
-        setCurrentDate(moment(currentDate).subtract(1, 'days'));
+        setCurrentDate(subtractDays(currentDate, 1));
     }
 
     const nextDay = () => {
-        setCurrentDate(moment(currentDate).add(1, 'days'));
+        setCurrentDate(addDays(currentDate, 1));
     }
 
     const toToday = () => {
-        setCurrentDate(moment());
+        setCurrentDate(getToday());
     }
 
     const saveMeal = (meal) => {
         updateMeal({
             ...meal,
-            date: moment(currentDate).format('YYYY-MM-DD')
+            date: formatDate(currentDate)
         });
     }
 
@@ -55,7 +55,7 @@ const Menu = ({
             <div className={styles.calendar}>
                 <div className={styles.header}>
                     <div className={styles.date}>
-                        {moment(currentDate).format('DD.MM.YYYY')}
+                        {formatDate(currentDate, DATE_SHOW_FORMAT)}
                     </div>
                     <div className={styles.nav}>
                         <Button onClick={prevDay} size='small' shape="circle" icon={<ArrowLeftOutlined />} />

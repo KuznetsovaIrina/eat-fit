@@ -1,0 +1,44 @@
+@import './../colors';
+
+.table {
+    width: 100%;
+    border-radius: 12px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    &.dark {
+        thead td,
+        tfoot td {
+            color: #fff;
+            background-color: $color_attn;
+            border-color: rgba(#fff, .1);
+        }    
+    }
+    &.light {
+        thead td,
+        tfoot td {
+            color: #222;
+            background-color: #f8f8f8;
+            border-color: rgba(#000, .1);
+        } 
+    }
+    thead td,
+    tfoot td {
+        font-size: 12px;
+        padding: 10px;
+        font-weight: 700;
+        color: #fff;
+        background-color: $color_attn;
+        border-color: rgba(#fff, .1);
+    }
+    td {
+        border-top: 1px solid #eee;
+        border-left: 1px solid #eee;
+        padding: 5px 10px;
+        width: 150px;
+        font-size: 14px;
+        font-weight: 600;
+        &:first-child {
+            width: 320px;
+        }
+    }
+}

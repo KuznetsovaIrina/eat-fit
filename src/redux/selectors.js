@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import { formatNumber, HUNDRED_GRAMS } from "../util/helpers";
 
 export const getAllIngredients = (state) => {
     return state.ingredients.allIngredients;
@@ -29,40 +30,26 @@ export const getTotalToday = createSelector(
     meals => {
         const total = meals
             .reduce((prev, current) => {
-                if (current.total) {
-                    return {
-                        kcal: prev.kcal + +current.total.kcal,
-                        squirrels: prev.squirrels + +current.total.squirrels,
-                        fats: prev.fats + +current.total.fats,
-                        carbohydrates: prev.carbohydrates + +current.total.carbohydrates,
-                    }
-                } else {
-                    return {
-                        kcal: prev.kcal,
-                        squirrels: prev.squirrels,
-                        fats: prev.fats,
-                        carbohydrates: prev.carbohydrates
-                    }     
+                return {
+                    k: current.total ? prev.k + +current.total.kcal : prev.k,
+                    s: current.total ? prev.s + +current.total.squirrels : prev.s,
+                    f: current.total ? prev.f + +current.total.fats : prev.f,
+                    c: current.total ? prev.c + +current.total.carbohydrates : prev.c,
                 }
-            }, {
-                kcal: 0,
-                squirrels: 0,
-                fats: 0,
-                carbohydrates: 0
-            });
+            }, { k: 0, s: 0, f: 0, c: 0 });
         
         return {
-            kcal: parseFloat(total.kcal).toFixed(2),
-            squirrels: parseFloat(total.squirrels).toFixed(2),
-            fats: parseFloat(total.fats).toFixed(2),
-            carbohydrates: parseFloat(total.carbohydrates).toFixed(2),
+            kcal: formatNumber(total.k),
+            squirrels: formatNumber(total.s),
+            fats: formatNumber(total.f),
+            carbohydrates: formatNumber(total.c),
         }
     }
 );
 
 export const getAllIngredientsWithDefaultWeight = createSelector(
     getAllIngredients,
-    ingredients => ingredients.map(i => ({...i, weight: 100}))
+    ingredients => ingredients.map(i => ({...i, weight: HUNDRED_GRAMS}))
 );
 
 export const getAllIngredientsWithDishes = createSelector(
@@ -77,7 +64,7 @@ export const getAllIngredientsWithDishes = createSelector(
                 squirrels: d.hundredGrams.squirrels,
                 fats: d.hundredGrams.fats,
                 carbohydrates: d.hundredGrams.carbohydrates,
-                weight: 100,
+                weight: HUNDRED_GRAMS,
             })),
             ...ingredients
         ]

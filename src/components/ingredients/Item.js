@@ -1,10 +1,17 @@
 import React from 'react';
-import styles from './ingredients.module.scss';
+import styles from './../../assets/styles/modules/ingredients.module.scss';
 import { Button } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import {USER_CATEGORY_INGREDIENTS} from './../../util/helpers';
 
-const Item = ({ingredient, remove, openEdit, index, isAdmin, currentCategory}) => {
+const Item = ({
+    ingredient,
+    remove,
+    openEdit,
+    index,
+    isAdmin,
+    currentCategory
+}) => {
     return (
         <tr>
             <td>
@@ -19,18 +26,10 @@ const Item = ({ingredient, remove, openEdit, index, isAdmin, currentCategory}) =
                     </div>
                 </div>
             </td>
-            <td>
-                {ingredient.kcal}
-            </td>
-            <td>
-                {ingredient.squirrels}
-            </td>
-            <td>
-                {ingredient.fats}
-            </td>
-            <td>
-                {ingredient.carbohydrates}
-            </td>
+            <td>{ingredient.kcal}</td>
+            <td>{ingredient.squirrels}</td>
+            <td>{ingredient.fats}</td>
+            <td>{ingredient.carbohydrates}</td>
             <td>
                 {(currentCategory === USER_CATEGORY_INGREDIENTS || isAdmin) &&
                     <div className={styles.tools}>

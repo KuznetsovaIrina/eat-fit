@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Radio, Button, InputNumber, Select } from 'antd';
-import styles from './../assets/styles/modules/calculator.module.scss';
+import styles from './../assets/styles/modules/Calculator.module.scss';
 import { useForm, Controller } from 'react-hook-form';
 import { calculationNorm, genders, targets, activityFactors, getActivityFactorByValue } from './../util/calculator';
 import { GENDER_MALE, GENDER_FEMALE, TARGET_RESET, TARGET_SUPPORT } from './../util/calculator';
@@ -8,10 +8,17 @@ import { connect } from 'react-redux';
 import { updateUserInfo } from './../redux/calculator-reducer';
 const { Option } = Select;
 
-
-const Calculator = ({userData, updateUserInfo}) => {
+const Calculator = ({
+    userData,
+    updateUserInfo
+}) => {
     const { handleSubmit, control } = useForm({ defaultValues: userData.info });
-    const [norm, setNorm] = useState(userData.norm || {calories: 0, squirrels: 0, fats: 0, carbohydrates: 0});
+    const [norm, setNorm] = useState(userData.norm || {
+        calories: 0,
+        squirrels: 0,
+        fats: 0,
+        carbohydrates: 0
+    });
 
     const onSubmit = data => {
         const res = calculationNorm(

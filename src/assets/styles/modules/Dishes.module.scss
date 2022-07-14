@@ -1,43 +1,18 @@
-@import './../../assets/styles/colors';
+@import './../colors';
 
 .ingredients {
     margin: 50px 0;
 }
 
-.table {
-    width: 100%;
-    margin: 20px auto;
-    border-radius: 12px;
-    background-color: #fff;
-    border: 1px solid #eee;
-    thead td,
-    tfoot td {
-        font-size: 12px;
-        padding: 10px;
-        font-weight: 700;
-        color: #fff;
-        background-color: $color_attn;
-        border-color: rgba(#fff, .1);
-    }
-    td {
-        border-top: 1px solid #eee;
-        border-left: 1px solid #eee;
-        padding: 4px 15px;
-        text-align: left;
-        width: 150px;
-        &:first-child {
-            text-align: left;
-            width: 320px;
-        }
-    }
+.formBox {
+    max-width: 1300px;
+    margin: 20px auto 0;
 }
 
 .form {
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    max-width: 1300px;
-    margin: 20px auto 0;
 }
 
 .imagePreview {
@@ -74,6 +49,7 @@
 
 .smallCol {
     width: 40%;
+    margin-top: -100px;
 }
 
 .bigCol {
@@ -237,20 +213,36 @@
 }
 
 .newIngredientForm {
-    width: 100%;
+    width: calc(60% - 40px);
     margin: 0 0 10px;
+    margin-left: auto;
     padding: 10px 20px;
     background-color: #f8f8f8;
     border-radius: 8px;
+    > div {
+        display: flex;
+        align-items: flex-start;
+        > div {
+            margin-right: 10px;
+            width: 20%;
+            flex: 1;
+        }
+    }
 }
 
 .labelNewIngredient {
     display: block;
     margin-bottom: 5px;
     small {
-        margin-left: 10px;
         line-height: 1.2;
         opacity: .7;
     }
 }
 
+.ingredientsTable {
+    width: 100%;
+    margin: 10px auto;
+    table {
+        margin-top: 10px;
+    }
+}

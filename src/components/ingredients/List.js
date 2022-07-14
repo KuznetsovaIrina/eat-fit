@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import styles from './ingredients.module.scss';
+import styles from './../../assets/styles/modules/ingredients.module.scss';
 import Item from './Item';
 import Form from './Form';
 import DrawerForm from '../DrawerForm';
 
-const List = ({isAdmin, addCategory, categories, ingredients, remove, edit, currentCategory}) => {
+const List = ({
+    isAdmin,
+    addCategory,
+    categories,
+    ingredients,
+    remove,
+    edit,
+    currentCategory
+}) => {
     const [visible, setVisible] = useState(false);
     const [editableObj, setEditableObj] = useState({});
 

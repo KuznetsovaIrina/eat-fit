@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import Form from './../components/ingredients/Form';
+import List from './../components/ingredients/List';
+import Categories from './../components/ingredients/Categories';
+import DrawerForm from './../components/DrawerForm';
+import { Button, Space } from 'antd';
+import { USER_CATEGORY_INGREDIENTS } from './../util/helpers';
 import {
     addIngredient,
     removeIngredient,
@@ -8,12 +14,6 @@ import {
     setIngredients,
     setIngredientsAC
 } from './../redux/ingredients-reducer';
-import Form from './../components/ingredients/Form';
-import List from './../components/ingredients/List';
-import Categories from './../components/ingredients/Categories';
-import DrawerForm from './../components/DrawerForm';
-import { Button, Space } from 'antd';
-
 
 const Ingredients = ({
     isAdmin,
@@ -26,11 +26,11 @@ const Ingredients = ({
     setIngredients,
 }) => {
     const [visible, setVisible] = useState(false);
-    const [currentCategory, setCurrentCategory] = useState('user');
+    const [currentCategory, setCurrentCategory] = useState(USER_CATEGORY_INGREDIENTS);
 
     useEffect(() => {
-        setIngredients(currentCategory)
-    }, []);
+        setIngredients(currentCategory);
+    }, [currentCategory, setIngredients]);
 
     const onClose = (categoryId, isSubmit) => {
         if (categoryId && isSubmit) {

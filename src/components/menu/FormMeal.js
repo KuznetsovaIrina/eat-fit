@@ -1,30 +1,35 @@
-import React, { useState } from 'react';
-import styles from './Menu.module.scss';
-import { Button, Input } from 'antd';
-import moment from 'moment';
+import React from 'react';
+import { Button } from 'antd';
+import { formatDate } from './../../util/helpers';
+import { useForm } from 'react-hook-form';
+import { ControllerInput } from '../../util/controllers';
+import styles from './../../assets/styles/modules/Menu.module.scss';
 
-const FormMeal = ({ addMeal, currentDate }) => {
-    const [newMealTitle, setNewMealTitle] = useState('');
+const FormMeal = ({
+    addMeal,
+    currentDate
+}) => {
+    const { handleSubmit, reset, control } = useForm();
 
-    const createMeal = (e) => {
-        e.preventDefault();
+    const onSubmit = formData => {
+        addMeal({
+            title: formData.title,
+            date: formatDate(currentDate)
+        });
 
-        if (newMealTitle.trim().length) {
-            addMeal({
-                title: newMealTitle,
-                date: moment(currentDate).format('YYYY-MM-DD')
-            });
-            setNewMealTitle('');
-        }
+        reset();
     }
 
     return (
-        <form onSubmit={createMeal} className={styles.formNewMeal}>
-            <Input
-                value={newMealTitle}
-                onChange={(e) => setNewMealTitle(e.target.value)}
-                placeholder='Название'
-            />
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.formMeal}>
+            <div>
+                <ControllerInput
+                    control={control}
+                    name='title'
+                    rules={{ required: 'Это поле обязательно' }}
+                    placeholder='Название'
+                />
+            </div>
             <Button htmlType='submit' type='primary' size='middle'>
                 Добавить прием пищи
             </Button>
