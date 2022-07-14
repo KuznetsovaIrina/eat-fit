@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
+import { connect } from 'react-redux';
+import { addDish, updateDish, removeDish } from './../redux/dishes-reducer';
+import { addIngredient } from './../redux/ingredients-reducer';
+import { getAllIngredientsWithDefaultWeight } from './../redux/selectors';
 import DrawerForm from './../components/DrawerForm';
 import List from './../components/dishes/List';
 import Form from './../components/dishes/Form';
-import { connect } from 'react-redux';
-import { addDish, updateDish, removeDish } from './../redux/dishes-reducer'
-import { addIngredient } from './../redux/ingredients-reducer'
-import { getAllIngredientsWithDefaultWeight } from './../redux/ingredients-selector'
-
 
 const Dishes = ({allIngredients, dishes, addDish, updateDish, removeDish, addIngredient}) => {
     const [visible, setVisible] = useState(false);

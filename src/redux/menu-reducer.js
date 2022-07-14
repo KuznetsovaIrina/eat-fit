@@ -6,9 +6,11 @@ const SET_MEALS = 'menu/SET_MEALS';
 const ADD_MEAL = 'menu/ADD_MEAL';
 const UPDATE_MEAL = 'menu/UPDATE_MEAL';
 const REMOVE_MEAL = 'menu/REMOVE_MEAL';
+const SET_CURRENT_DATE = 'menu/SET_CURRENT_DATE';
 
 const initialState = {
     meals: [],
+    currentDate: null,
 }
 
 const menuReducer = (state = initialState, action) => {
@@ -33,6 +35,11 @@ const menuReducer = (state = initialState, action) => {
                 ...state,
                 meals: state.meals.filter(meal => meal.id !== action.payload)
             }
+        case SET_CURRENT_DATE:
+            return {
+                ...state,
+                currentDate: action.payload
+            }
         default:
             return state;
     }
@@ -42,6 +49,7 @@ export const setMealsAC = (meals) => ({type: SET_MEALS, payload: meals});
 export const addMealAC = (meal) => ({type: ADD_MEAL, payload: meal});
 export const updateMealAC = (meal) => ({type: UPDATE_MEAL, payload: meal});
 export const removeMealAC = (id) => ({type: REMOVE_MEAL, payload: id});
+export const setCurrentDateAC = (date) => ({type: SET_CURRENT_DATE, payload: date});
 
 export const addMeal = (meal) => async (dispatch, getState) => {
     const id = await menuAPI.create(meal, getState().auth.user.uid);
@@ -61,21 +69,15 @@ export const removeMeal = (id) => async (dispatch, getState) => {
     message.success('Прием пищи удален!');
 }
 
-export const setMenu = (date) => async (dispatch, getState) => {
+export const setMenu = () => async (dispatch, getState) => {
     const res = await menuAPI.getAll(getState().auth.user.uid);
 
     if (res) {
         const meals = objToArray(res);
-        const todayMeals = meals.filter(t => t.date === date);
-        dispatch(setMealsAC(todayMeals));
+        dispatch(setMealsAC(meals));
     } else {
         dispatch(setMealsAC([]));
     }
-    // Берем из базы все приемы пищи, фильтруем и устанавливаем только те которые на текущую дату.
-
-    // Или же. берем из базы все приемы пищи, устанавливаем.
-    // Делаем в стейте текущую дату и отдаем все приемы пищи, а через селекторы уже фильтруем только на текущую дату.
-    
 }
 
 export default menuReducer;
