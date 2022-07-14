@@ -67,7 +67,7 @@ const Form = ({
 
     return (
         <div className={styles.formBox}>
-            <FormNewIngredient addIngredient={addIngredient} />
+            {withIngredients && <FormNewIngredient addIngredient={addIngredient} />}
 
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                 <div className={styles.smallCol}>
@@ -114,7 +114,7 @@ const Form = ({
                                     returnIngredients={setIngredients}
                                     returnTotal={setTotal}
                                     returnHundredGrams={setHundredGrams}
-                                    defaultList={data.ingredients && data.ingredients}
+                                    defaultList={edit ? data.ingredients && data.ingredients : ingredients}
                                     selectName='ingredients'
                                 />
                             </div>

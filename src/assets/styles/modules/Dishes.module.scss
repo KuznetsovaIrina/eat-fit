@@ -6,7 +6,7 @@
 
 .formBox {
     max-width: 1300px;
-    margin: 20px auto 0;
+    margin: 0 auto;
 }
 
 .form {
@@ -49,7 +49,6 @@
 
 .smallCol {
     width: 40%;
-    margin-top: -100px;
 }
 
 .bigCol {
@@ -213,9 +212,7 @@
 }
 
 .newIngredientForm {
-    width: calc(60% - 40px);
-    margin: 0 0 10px;
-    margin-left: auto;
+    margin: 0 0 30px;
     padding: 10px 20px;
     background-color: #f8f8f8;
     border-radius: 8px;
