@@ -5,6 +5,10 @@ export const getAllIngredients = (state) => {
     return state.ingredients.allIngredients;
 }
 
+export const getUserIngredients = (state) => {
+    return state.ingredients.userIngredients;
+}
+
 export const getAllDishes = (state) => {
     return state.dishes.dishes;
 }
@@ -49,7 +53,12 @@ export const getTotalToday = createSelector(
 
 export const getAllIngredientsWithDefaultWeight = createSelector(
     getAllIngredients,
-    ingredients => ingredients.map(i => ({...i, weight: HUNDRED_GRAMS}))
+    getUserIngredients,
+    (ingredients, userIngredients) => {
+        const i = ingredients.map(i => ({...i, weight: HUNDRED_GRAMS}));
+        const u = userIngredients.map(i => ({...i, weight: HUNDRED_GRAMS}));
+        return [...u, ...i];
+    }
 );
 
 export const getAllIngredientsWithDishes = createSelector(

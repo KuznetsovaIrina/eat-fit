@@ -3,8 +3,8 @@ import { Controller } from 'react-hook-form';
 import { Select, Tag } from 'antd';
 import styles from './../../assets/styles/modules/FoodTable.module.scss';
 import FoodItem from './FoodItem';
-import { TABLE_THEME_DARK, HUNDRED_GRAMS } from './../../util/helpers';
-import { formatNumber, calculateTotalWeight } from './../../util/helpers';
+import { TABLE_THEME_DARK, HUNDRED_GRAMS } from '../../util/helpers';
+import { formatNumber, calculateTotalWeight, rules } from '../../util/helpers';
 const { Option } = Select;
 
 const FoodTable = ({
@@ -83,8 +83,13 @@ const FoodTable = ({
         setList([...list, options.find(c => c.id === value)]);
     }
 
-    const removeListItem = (value) => {
+    const removeListItem = (value) => { 
         setList([...list.filter(l => l.id !== value)]);
+    }
+
+    const getOldTitle = (label) => {
+        const item = list.find(c => c.id === label);
+        return item ? item.title : null;
     }
 
     const renderTag = ({ label, value, closable, onClose, onPreventMouseDown }) => {
@@ -96,12 +101,14 @@ const FoodTable = ({
                 onClose={onClose}
                 style={{ margin: '3px', fontSize: '14px', fontWeight: '600' }}
             >
-                {label !== value ? label
+                {label !== value
+                    ?
+                        label
                     :
-                    <>
-                        {list.find(c => c.id === label).title}
-                        <small> (был удален)</small>
-                    </>
+                        <>
+                            {getOldTitle(label)}
+                            <small> (был удален)</small>
+                        </>
                 }
             </Tag>
         )
@@ -113,7 +120,7 @@ const FoodTable = ({
                 <Controller
                     control={control}
                     name={selectName}
-                    rules={{ required: 'Это поле обязательно' }}
+                    rules={rules.required}
                     render={({
                         field: { name, value, onChange },
                         formState: { errors }
@@ -165,6 +172,7 @@ const FoodTable = ({
                                     item={item}
                                     list={list}
                                     isEdit={isEdit}
+                                    options={options}
                                 />
                             )}
                         </tbody>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './../../assets/styles/modules/ingredients.module.scss';
-import { Button } from 'antd';
+import { Button, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import {USER_CATEGORY_INGREDIENTS} from './../../util/helpers';
 
@@ -12,6 +12,12 @@ const Item = ({
     isAdmin,
     currentCategory
 }) => {
+    const onConfirmDelete = (e) => {
+        remove(ingredient.id, currentCategory)
+            .then(m => message.success(m))
+            .catch(e => message.error('Что-то пошло не так'));
+    }
+
     return (
         <tr>
             <td>
@@ -34,7 +40,14 @@ const Item = ({
                 {(currentCategory === USER_CATEGORY_INGREDIENTS || isAdmin) &&
                     <div className={styles.tools}>
                         <Button onClick={() => openEdit(ingredient)} shape="circle" icon={<EditOutlined  />} size='small' />
-                        <Button onClick={() => remove(ingredient.id, currentCategory)} shape="circle" icon={<DeleteOutlined  />} size='small' />
+                        <Popconfirm
+                            title="Точно удалить?"
+                            onConfirm={onConfirmDelete}
+                            okText="Да"
+                            cancelText="Нет"
+                        >
+                            <Button shape="circle" icon={<DeleteOutlined  />} size='small' />
+                        </Popconfirm>
                     </div>
                 }
             </td>

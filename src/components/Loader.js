@@ -9,11 +9,28 @@ const icon = (
     />
 );
 
-const Loader = () => {
+const styles = {
+    height: '100px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}
+
+const Loader = ({
+    small
+}) => {
     return (
-        <div className='loader'>
-            <Spin indicator={icon} />
-        </div>
+        <>
+        {small
+        ?
+            <div style={styles}>
+                <Spin />
+            </div>
+        :
+            <div className='loader'>
+                <Spin indicator={icon} />
+            </div>}
+        </>
     )
 }
 

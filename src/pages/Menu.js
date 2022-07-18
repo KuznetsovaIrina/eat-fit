@@ -9,6 +9,7 @@ import styles from './../assets/styles/modules/Menu.module.scss';
 import Meal from '../components/menu/Meal';
 import FormMeal from '../components/menu/FormMeal';
 import Itogo from '../components/menu/Itogo';
+import Loader from './../components/Loader';
 
 const Menu = ({
     userNorm,
@@ -19,17 +20,15 @@ const Menu = ({
     updateMeal,
     setMenu,
     setCurrentDateAC,
-    total
+    total,
+    loading
 }) => {
     const [currentDate, setCurrentDate] = useState(getToday());
 
     useEffect(() => {
-        setMenu();
-    }, [currentDate, setMenu]);
-
-    useEffect(() => {
         setCurrentDateAC(formatDate(currentDate));
-    }, [currentDate, setCurrentDateAC]);
+        setMenu();
+    }, [currentDate, setMenu, setCurrentDateAC]);
 
     const prevDay = () => {
         setCurrentDate(subtractDays(currentDate, 1));
@@ -41,13 +40,6 @@ const Menu = ({
 
     const toToday = () => {
         setCurrentDate(getToday());
-    }
-
-    const saveMeal = (meal) => {
-        updateMeal({
-            ...meal,
-            date: formatDate(currentDate)
-        });
     }
 
     return (
@@ -65,7 +57,7 @@ const Menu = ({
                 </div>
 
                 <div className={styles.body}>
-                    {!!meals.length &&
+                    {loading ? <Loader small={true} /> :
                         <ul className={styles.meals}>
                             {meals.map(m =>
                                 <Meal
@@ -73,7 +65,8 @@ const Menu = ({
                                     meal={m}
                                     allIngredientsWithDishes={allIngredientsWithDishes}
                                     remove={removeMeal}
-                                    saveMeal={saveMeal}
+                                    updateMeal={updateMeal}
+                                    currentDate={formatDate(currentDate)}
                                 />
                             )}
                         </ul>}
@@ -98,7 +91,8 @@ const mapStateToProps = (state) => ({
     meals: getMealsToday(state),
     total: getTotalToday(state),
     allIngredientsWithDishes: getAllIngredientsWithDishes(state),
-    dishes: state.dishes.dishes
+    dishes: state.dishes.dishes,
+    loading: state.menu.loading,
 });
 
 export default connect(mapStateToProps, {

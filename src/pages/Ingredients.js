@@ -24,6 +24,7 @@ const Ingredients = ({
     updateIngredient,
     addCategory,
     setIngredients,
+    loading
 }) => {
     const [visible, setVisible] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(USER_CATEGORY_INGREDIENTS);
@@ -83,6 +84,7 @@ const Ingredients = ({
                 addCategory={addCategory}
                 categories={categories}
                 currentCategory={currentCategory}
+                loading={loading}
             />
         </>
     )
@@ -91,7 +93,8 @@ const Ingredients = ({
 const mapStateToProps = (state) => ({
     ingredients: state.ingredients.ingredients,
     categories: state.ingredients.categories,
-    isAdmin: state.auth.user.isAdmin
+    loading: state.ingredients.loading,
+    isAdmin: state.auth.user.isAdmin,
 })
 
 export default connect(mapStateToProps, {

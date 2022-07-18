@@ -1,9 +1,10 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { formatDate } from './../../util/helpers';
 import { useForm } from 'react-hook-form';
 import { ControllerInput } from '../../util/controllers';
 import styles from './../../assets/styles/modules/Menu.module.scss';
+import { rules } from './../../util/helpers';
 
 const FormMeal = ({
     addMeal,
@@ -12,12 +13,15 @@ const FormMeal = ({
     const { handleSubmit, reset, control } = useForm();
 
     const onSubmit = formData => {
-        addMeal({
+        const res = addMeal({
             title: formData.title,
             date: formatDate(currentDate)
         });
 
-        reset();
+        res.then(m => {
+            message.success(m);
+            reset();
+        }).catch(e => message.error('Что-то пошло не так'))
     }
 
     return (
@@ -26,7 +30,7 @@ const FormMeal = ({
                 <ControllerInput
                     control={control}
                     name='title'
-                    rules={{ required: 'Это поле обязательно' }}
+                    rules={rules.required}
                     placeholder='Название'
                 />
             </div>

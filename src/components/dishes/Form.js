@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ControllerTextArea, ControllerInput } from './../../util/controllers';
-import CaloriesField from './../CaloriesField';
+import CaloriesField from '../CaloriesField';
 import { useForm } from 'react-hook-form';
-import { Button, Switch } from 'antd';
+import { Button, Switch, message } from 'antd';
 import styles from './../../assets/styles/modules/Dishes.module.scss';
 import FormNewIngredient from './FormNewIngredient';
-import FoodTable from '../TableFood/FoodTable';
+import FoodTable from '../tableFood/FoodTable';
 import PreviewImage from './../PreviewImage';
+import { rules } from './../../util/helpers';
 
 const Form = ({
     data = {},
@@ -31,13 +32,14 @@ const Form = ({
     const [ingredients, setIngredients] = useState();
     const [total, setTotal] = useState();
     const [hundredGrams, setHundredGrams] = useState();
-    const [imageURL, setImageURL] = useState();
+    const [imageURL, setImageURL] = useState(null);
+    const [visibleModal, setVisibleModal] = useState(false);
 
     const onSubmit = formData => {
         const dish = {
             title: formData.title,
             imageURL: imageURL,
-            description: formData.description,
+            description: formData.description || null,
         }
 
         if (edit) {
@@ -59,15 +61,26 @@ const Form = ({
             }
         }
 
-        add ? add(dish) : edit(dish);
-
-        reset();
-        close();
+        const res = add ? add(dish) : edit(dish);
+        res.then(m => {
+            message.success(m);
+            reset();
+            close();
+        }).catch(e => message.error('Что-то пошло не так'));
     }
 
+    const showModal = () => {
+        setVisibleModal(true);
+    }
+    
     return (
         <div className={styles.formBox}>
-            {withIngredients && <FormNewIngredient addIngredient={addIngredient} />}
+            {withIngredients &&
+                <FormNewIngredient
+                    addIngredient={addIngredient}
+                    visible={visibleModal}
+                    setVisible={setVisibleModal}
+                />}
 
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                 <div className={styles.smallCol}>
@@ -83,7 +96,7 @@ const Form = ({
                         <ControllerInput
                             control={control}
                             name='title'
-                            rules={{ required: 'Это поле обязательно' }}
+                            rules={rules.required}
                         />
                     </div>
 
@@ -106,6 +119,7 @@ const Form = ({
                         ? 
                         <div className={styles.ingredients}>
                             <label>Ингредиенты</label>
+                            <Button onClick={showModal}>Добавить новый</Button>
 
                             <div className={styles.ingredientsTable}>
                                 <FoodTable

@@ -1,6 +1,5 @@
 import firebase from 'firebase/compat/app';
 import { auth } from './../firebase';
-import { userAPI } from '../api';
 
 const SET_AUTH_USER = 'auth/SET_AUTH_USER';
 
@@ -30,7 +29,6 @@ export const login = () => async (dispatch) => {
     const user = { uid, displayName, email, photoURL }
 
     dispatch(setAuthUser(user));
-    userAPI.create(user);
 }
 
 export const logout = () => async (dispatch) => {

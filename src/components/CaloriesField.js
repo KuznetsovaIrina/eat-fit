@@ -1,6 +1,7 @@
 import React from 'react';
-import { ControllerInputNumber } from './../util/controllers';
+import { ControllerInputNumber } from '../util/controllers';
 import { Space } from 'antd';
+import { rules } from '../util/helpers'
 
 const CaloriesField = ({
     control,
@@ -14,7 +15,7 @@ const CaloriesField = ({
                     control={control}
                     name='kcal'
                     placeholder='Калорий (на 100 гр.)'
-                    rules={{ required: 'Это поле обязательно' }}
+                    rules={rules.required}
                 />
             </div>
             <div>
@@ -23,7 +24,7 @@ const CaloriesField = ({
                     control={control}
                     name='squirrels'
                     placeholder='Белков (на 100 гр.)'
-                    rules={{ required: 'Это поле обязательно' }}
+                    rules={rules.required}
                 />
             </div>
             <div>
@@ -32,7 +33,7 @@ const CaloriesField = ({
                     control={control}
                     name='fats'
                     placeholder='Жиров (на 100 гр.)'
-                    rules={{ required: 'Это поле обязательно' }}
+                    rules={rules.required}
                 />
             </div>
             <div>
@@ -41,7 +42,7 @@ const CaloriesField = ({
                     control={control}
                     name='carbohydrates'
                     placeholder='Углеводов (на 100 гр.)'
-                    rules={{ required: 'Это поле обязательно' }}
+                    rules={rules.required}
                 />
             </div>
         </Space>

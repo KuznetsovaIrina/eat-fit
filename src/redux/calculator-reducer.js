@@ -1,5 +1,4 @@
 import { userAPI } from "../api";
-import firebase from 'firebase/compat/app';
 import { message } from 'antd';
 const SET_DATA = 'calculator/SET_DATA';
 
@@ -21,15 +20,15 @@ const calculatorReducer = (state = initialState, action) => {
 
 export const setData = (data) => ({ type: SET_DATA, payload: data });
 
-export const updateUserInfo = (data, norm) => async (dispatch) => {
-    await userAPI.updateInfo(firebase.auth().currentUser.uid, data, norm);
+export const updateUserInfo = (data, norm) => async (dispatch, getState) => {
+    await userAPI.updateInfo(getState().auth.user.uid, data, norm);
 
     dispatch(setData({
         info: data,
         norm
     }));
 
-    message.success('Данные изменены');
+    return 'Данные изменены';
 }
 
 export default calculatorReducer;

@@ -1,102 +1,154 @@
-import axios from 'axios';
-import firebase from 'firebase/compat/app';
-const url = process.env.REACT_APP_DB_URL;
+import { database } from './firebase';
+
+const getData = async (url) => {
+    const ref = database.ref(url);
+    let data = {};
+    
+    try {
+        const query = await ref.once('value');
+        data = {...query.val()};
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+
+    return data;
+}
 
 export const userAPI = {
-    async create(user) {
-        const res = await axios.get(`${url}/users/${user.uid}.json`);
-        if (res.data === null) {
-            const ref = firebase.database().ref(`users/${user.uid}`);
-            ref.set(user);
-        }
+    getRef() {
+        return `users/`;
     },
 
-    async get(uid) {
-        const res = await axios.get(`${url}/users/${uid}.json`);
-        return res.data;
+    async create(ref, user) {
+        ref.limitToFirst(1).once('value', snapshot => {
+            if (!snapshot.exists()) {
+                ref.set(user);
+            }
+        });
+    },
+
+    async get(user) {
+        const ref = database.ref(this.getRef() + user.uid);
+        await this.create(ref, user);
+        return getData(ref);
     },
 
     async updateInfo(uid, data, norm) {
-        await axios.put(`${url}/users/${uid}/info.json`, {...data});
-        await axios.put(`${url}/users/${uid}/norm.json`, {...norm});
+        const ref = database.ref(this.getRef() + uid);
+        await ref.update({info: data, norm: norm});
     }
 }
 
 export const ingredientsAPI = {
-    async create(ingredient, uid, categoryid) {
-        const res = categoryid
-            ? await axios.post(`${url}/categories/${categoryid}/ingredients.json`, ingredient)
-            : await axios.post(`${url}/users/${uid}/ingredients/.json`, ingredient);
+    getUserRef(id) {
+        return `users/${id}/ingredients/`;
+    },
 
-        return res.data.name;
+    getCategorysRef(id) {
+        return `categories/${id}/ingredients/`;
+    },
+
+    getCategoriesRef() {
+        return `categories`;
+    },
+
+    async create(ingredient, uid, categoryId) {
+        const ref = categoryId
+            ? this.getCategorysRef(categoryId)
+            : this.getUserRef(uid);
+
+        const res = await database.ref(ref).push(ingredient);
+        return res.key;
     },
 
     async update(ingredient, uid, categoryId) {
-        const ingredientUrl = categoryId
-            ? `${url}/categories/${categoryId}/ingredients/${ingredient.id}/.json`
-            : `${url}/users/${uid}/ingredients/${ingredient.id}/.json`;
+        const ref = categoryId
+            ? this.getCategorysRef(categoryId) + ingredient.id
+            : this.getUserRef(uid) + ingredient.id;
 
-        await axios.put(ingredientUrl, ingredient);
+        await database.ref(ref).update(ingredient);
     },
 
     async remove(id, uid, categoryId) {
-        categoryId
-            ? await axios.delete(`${url}/categories/${categoryId}/ingredients/${id}/.json`)
-            : await axios.delete(`${url}/users/${uid}/ingredients/${id}/.json`);
+        const ref = categoryId
+            ? this.getCategorysRef(categoryId) + id
+            : this.getUserRef(uid) + id;
+
+        await database.ref(ref).remove();
     },
 
     async getByCategory(categoryId) {
-        const res = await axios.get(`${url}/categories/${categoryId}/ingredients.json`);
-        return res.data;
+        const ref = database.ref(this.getCategorysRef(categoryId));
+        return getData(ref);
     },
     
     async getByUser(uid) {
-        const res = await axios.get(`${url}/users/${uid}/ingredients.json`);
-        return res.data;
+        const ref = database.ref(this.getUserRef(uid));
+        return getData(ref);
     },
 
     async getCategories() {
-        const res = await axios.get(`${url}/categories.json`);
-        return res.data;
+        const ref = database.ref(this.getCategoriesRef());
+        return getData(ref);
     },
 
     async createCategory(category) {
-        const res = await axios.post(`${url}/categories.json`, category);
-        return res.data.name;
+        const res = await database.ref(this.getCategoriesRef()).push(category);
+        return res.key;
     }
 }
 
 export const dishesAPI = {
+    getRef(uid) {
+        return `users/${uid}/dishes/`;
+    },
+
     async create(dish, uid) {
-        const res = await axios.post(`${url}/users/${uid}/dishes/.json`, dish);
-        return res.data.name;
+        const ref = this.getRef(uid);
+        const res = database.ref(ref).push(dish);
+        return res.key;
     },
 
     async remove(id, uid) {
-        await axios.delete(`${url}/users/${uid}/dishes/${id}/.json`);
+        const ref = this.getRef(uid) + id;
+        await database.ref(ref).remove();
     },
 
     async update(dish, uid) {
-        await axios.put(`${url}/users/${uid}/dishes/${dish.id}/.json`, dish);
-    },
-}
-
-export const menuAPI = {
-    async create(meal, uid) {
-        const res = await axios.post(`${url}/users/${uid}/menu/.json`, meal);
-        return res.data.name;
-    },
-
-    async remove(id, uid) {
-        await axios.delete(`${url}/users/${uid}/menu/${id}/.json`);
-    },
-
-    async update(meal, uid) {
-        await axios.put(`${url}/users/${uid}/menu/${meal.id}/.json`, meal);
+        const ref = this.getRef(uid) + dish.id;
+        await database.ref(ref).update(dish);
     },
 
     async getAll(uid) {
-        const res = await axios.get(`${url}/users/${uid}/menu.json`);
-        return res.data;
+        const ref = this.getRef(uid);
+        return getData(ref);
     }
+}
+
+export const menuAPI = {
+    getRef(uid) {
+        return `users/${uid}/menu/`;
+    },
+
+    async create(meal, uid) {
+        const ref = this.getRef(uid);
+        const res = database.ref(ref).push(meal);
+        return res.key;
+    },
+
+    async remove(id, uid) {
+        const ref = this.getRef(uid) + id;
+        await database.ref(ref).remove();
+    },
+
+    async update(meal, uid) {
+        const ref = this.getRef(uid) + meal.id;
+        await database.ref(ref).update(meal);
+    },
+
+    async getAll(uid) {
+        const ref = database.ref(this.getRef(uid));
+        return getData(ref);
+    },
 }

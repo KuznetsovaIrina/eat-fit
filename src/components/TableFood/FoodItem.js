@@ -5,15 +5,21 @@ const FoodItem = ({
     item,
     list,
     setList,
-    isEdit = true
+    options,
+    isEdit = true,
 }) => {
     const onChangeWeight = value => {
         setList(list.map(i => i.id === item.id ? { ...i, weight: value} : i));
     }
 
+    const getValue = (oldTitle, key) => {
+        const ingredient = options.find(o => o.id === item.id);
+        return ingredient ? ingredient[key] : oldTitle;
+    }
+
     return (
         <tr>
-            <td>{item.title}</td>
+            <td>{getValue(item.title, 'title')}</td>
             <td>
                 {isEdit
                     ?
@@ -28,10 +34,10 @@ const FoodItem = ({
                     item.weight
                 }
             </td>
-            <td>{parseFloat(item.kcal / 100 * item.weight).toFixed(2)}</td>
-            <td>{parseFloat(item.squirrels / 100 * item.weight).toFixed(2)}</td>
-            <td>{parseFloat(item.fats / 100 * item.weight).toFixed(2)}</td>
-            <td>{parseFloat(item.carbohydrates / 100 * item.weight).toFixed(2)}</td>
+            <td>{parseFloat(getValue(item.kcal, 'kcal') / 100 * item.weight).toFixed(2)}</td>
+            <td>{parseFloat(getValue(item.squirrels, 'squirrels') / 100 * item.weight).toFixed(2)}</td>
+            <td>{parseFloat(getValue(item.fats, 'fats') / 100 * item.weight).toFixed(2)}</td>
+            <td>{parseFloat(getValue(item.carbohydrates, 'carbohydrates') / 100 * item.weight).toFixed(2)}</td>
         </tr>
     )
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './../../assets/styles/modules/Dishes.module.scss';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, message, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const Item = ({
@@ -8,18 +8,28 @@ const Item = ({
     remove,
     openEdit
 }) => {
+    const onConfirmDelete = () => {
+        remove(dish.id)
+            .then(m => message.success(m))
+            .catch(e => message.error('Что-то пошло не так'));
+    }
+
     return (
         <li className={styles.item}>
             <div className={styles.tool}>
-                <Tooltip title="Удалить">
+                <Popconfirm
+                        title="Точно удалить?"
+                        onConfirm={onConfirmDelete}
+                        okText="Да"
+                        cancelText="Нет"
+                    >
                     <Button
                         size='small'
                         type="text"
                         shape="circle"
                         icon={<DeleteOutlined />}
-                        onClick={() => remove(dish.id)}
                     />
-                </Tooltip>
+                </Popconfirm>
                 <Tooltip title="Редактировать">
                     <Button
                         size='small'

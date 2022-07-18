@@ -3,6 +3,7 @@ import styles from './../../assets/styles/modules/ingredients.module.scss';
 import Item from './Item';
 import Form from './Form';
 import DrawerForm from '../DrawerForm';
+import Loader from './../Loader';
 
 const List = ({
     isAdmin,
@@ -11,7 +12,8 @@ const List = ({
     ingredients,
     remove,
     edit,
-    currentCategory
+    currentCategory,
+    loading
 }) => {
     const [visible, setVisible] = useState(false);
     const [editableObj, setEditableObj] = useState({});
@@ -55,17 +57,26 @@ const List = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {ingredients.map((i, index) =>
-                        <Item
-                            index={index}
-                            openEdit={openEdit}
-                            key={i.id}
-                            ingredient={i}
-                            remove={remove}
-                            isAdmin={isAdmin}
-                            currentCategory={currentCategory}
-                        />
-                    )}
+                    {loading
+                        ?
+                        <tr>
+                            <td colSpan={6}>
+                                <Loader small={true} />
+                            </td>
+                        </tr>
+                        :
+                        ingredients.map((i, index) =>
+                            <Item
+                                index={index}
+                                openEdit={openEdit}
+                                key={i.id}
+                                ingredient={i}
+                                remove={remove}
+                                isAdmin={isAdmin}
+                                currentCategory={currentCategory}
+                            />
+                        )
+                    }
                 </tbody>
             </table>
         </>

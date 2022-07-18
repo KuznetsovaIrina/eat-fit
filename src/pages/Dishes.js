@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { connect } from 'react-redux';
-import { addDish, updateDish, removeDish } from './../redux/dishes-reducer';
+import { addDish, updateDish, removeDish, fetchDishes } from './../redux/dishes-reducer';
 import { addIngredient } from './../redux/ingredients-reducer';
 import { getAllIngredientsWithDefaultWeight } from './../redux/selectors';
 import DrawerForm from './../components/DrawerForm';
 import List from './../components/dishes/List';
 import Form from './../components/dishes/Form';
+import Loader from './../components/Loader';
 
 const Dishes = ({
     allIngredients,
@@ -14,9 +15,15 @@ const Dishes = ({
     addDish,
     updateDish,
     removeDish,
-    addIngredient
+    addIngredient,
+    fetchDishes,
+    loading
 }) => {
     const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        fetchDishes();
+    }, [fetchDishes]);
 
     const onClose = () => {
         setVisible(false)
@@ -45,25 +52,29 @@ const Dishes = ({
                 />
             </DrawerForm>
             
-            <List
-                dishes={dishes}
-                remove={removeDish}
-                edit={updateDish}
-                allIngredients={allIngredients}
-                addIngredient={addIngredient}
-            />
+            {loading ? <Loader small={true} /> :
+                <List
+                    dishes={dishes}
+                    remove={removeDish}
+                    edit={updateDish}
+                    allIngredients={allIngredients}
+                    addIngredient={addIngredient}
+                />
+            }
         </>
     )
 }
 
 const mapStateToProps = (state) => ({
     allIngredients: getAllIngredientsWithDefaultWeight(state),
-    dishes: state.dishes.dishes
+    dishes: state.dishes.dishes,
+    loading: state.dishes.loading
 })
 
 export default connect(mapStateToProps, {
     addDish,
     updateDish,
     removeDish,
-    addIngredient
+    addIngredient,
+    fetchDishes
 })(Dishes);

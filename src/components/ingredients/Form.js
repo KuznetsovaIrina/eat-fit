@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import styles from './../../assets/styles/modules/ingredients.module.scss';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { useForm } from 'react-hook-form';
 import { ControllerInput, ControllerSelect } from '../../util/controllers';
 import FormNewCategory from './FormNewCategory';
 import CaloriesField from '../CaloriesField';
 import PreviewImage from '../PreviewImage';
+import { rules } from './../../util/helpers';
 
 const Form = ({
     isAdmin,
@@ -17,15 +18,18 @@ const Form = ({
     close
 }) => {
     const { handleSubmit, reset, control } = useForm({ defaultValues: data });
-    const [imageURL, setImageURL] = useState();
+    const [imageURL, setImageURL] = useState(null);
 
     const onSubmit = formData => {
-        add
+        const res = add
             ? add({...formData, imageURL}, formData.category)
-            : edit({...formData, imageURL}, formData.category, data.category);
+            : edit({...formData, imageURL}, data.category);
 
-        reset();
-        close(formData.category, true);
+        res.then(m => {
+            message.success(m);
+            reset();
+            close(formData.category, true);
+        }).catch(e => message.error('Что-то пошло не так'))
     }
 
     return (
@@ -61,7 +65,7 @@ const Form = ({
                     <ControllerInput
                         control={control}
                         name='title'
-                        rules={{ required: 'Это поле обязательно' }}
+                        rules={rules.required}
                     />
                 </div>
                 

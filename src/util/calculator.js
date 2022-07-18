@@ -78,7 +78,7 @@ export const calculationNorm = (gender, weight, growth, age, activity, target) =
     }
 
     return {
-        calories: Math.round(norm),
+        kcal: Math.round(norm),
         squirrels,
         fats,
         carbohydrates

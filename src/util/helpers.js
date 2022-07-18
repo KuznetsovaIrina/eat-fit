@@ -14,3 +14,7 @@ export const addDays = (date, days) => moment(date).add(days, 'days');
 export const subtractDays = (date, days) => moment(date).subtract(days, 'days');
 export const getToday = () => moment();
 export const objToArray = (object) => Object.keys(object).map(id => ({...object[id], id }));
+
+export const rules = {
+    required: {required: 'Это поле обязательно'},
+}
